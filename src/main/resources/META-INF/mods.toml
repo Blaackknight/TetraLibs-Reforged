@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT License"
+
+[[mods]]
+modId="tetralibs"
+version="0.0.1"
+displayName="TetraLibs: Reforged"
+displayURL="https://www.bck-inc.fr/tetralibs"
+logoFile="logo.png"
+credits="0_0"
+authors="DragClover (BCK)"
+
+# Start of user code block mod configuration
+# End of user code block mod configuration
+
+[[dependencies.tetralibs]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1]"
+    ordering="AFTER"
+    side="BOTH"
+
+
+
+
+# Start of user code block dependencies configuration
+# End of user code block dependencies configuration

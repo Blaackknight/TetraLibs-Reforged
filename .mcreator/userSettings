@@ -1,0 +1,18 @@
+{
+  "workspacePanelIconSize": "TILES",
+  "workspacePanelSortType": "CREATED",
+  "workspacePanelSortAscending": true,
+  "projectBrowserSplitPos": 234,
+  "projectBrowserState": {
+    "expandedPaths": [
+      "[, TetraLibs: Reforged]",
+      "[, TetraLibs: Reforged, Source (Gradle)]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs\\core]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs\\economy]",
+      "[, TetraLibs: Reforged, Source (Gradle), C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs, C:\\Users\\DragC\\Desktop\\Mods\\TetraLibs Reforged\\src\\main\\java\\fr\\bck\\tetralibs\\init]"
+    ]
+  }
+}

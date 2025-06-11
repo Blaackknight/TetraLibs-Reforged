@@ -1,0 +1,596 @@
+{
+  "mod_elements": [
+    {
+      "name": "TetraLibsReforgedTab",
+      "type": "tab",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tetra_libs_reforged_tab",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "TetraRegistries",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "tetra_registries",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/TetraRegistries.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "TetraModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "tetra_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/TetraModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "ModuleManager",
+      "type": "code",
+      "compiles": false,
+      "locked_code": true,
+      "registry_name": "module_manager",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/ModuleManager.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKCoreModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_core_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKCoreModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKLevelModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_level_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLevelModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKSkillModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_skill_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKSkillModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKRegionModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_region_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKRegionModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKRecipeModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_recipe_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKRecipeModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKHomeModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_home_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKHomeModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKPermissionsModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_permissions_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKPermissionsModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKSpawnModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_spawn_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKSpawnModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKTooltipModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_tooltip_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKTooltipModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKServerdataModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_serverdata_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKServerdataModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKUserdataModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_userdata_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKUserdataModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKBackpackModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_backpack_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKBackpackModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKLichEyeModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_lich_eye_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLichEyeModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "ModulesConfig",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "modules_config",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/ModulesConfig.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKLichClearModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_lich_clear_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLichClearModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKLog",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_log",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLog.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "CoreDependentModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "core_dependent_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/CoreDependentModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "ModuleIds",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "module_ids",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/ModuleIds.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKPermissions",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_permissions",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKPermissions.java"
+        ]
+      },
+      "path": "~/Permissions"
+    },
+    {
+      "name": "BCKUserdata",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_userdata",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKUserdata.java"
+        ]
+      },
+      "path": "~/data"
+    },
+    {
+      "name": "DataWrapper",
+      "type": "code",
+      "compiles": false,
+      "locked_code": true,
+      "registry_name": "data_wrapper",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/DataWrapper.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "JsonKeyExtractor",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "json_key_extractor",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/JsonKeyExtractor.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKUtils",
+      "type": "code",
+      "compiles": false,
+      "locked_code": true,
+      "registry_name": "bck_utils",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKUtils.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKServerdata",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_serverdata",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKServerdata.java"
+        ]
+      },
+      "path": "~/data"
+    },
+    {
+      "name": "GameModeHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "game_mode_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/GameModeHandler.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "PermEventHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "perm_event_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/PermEventHandler.java"
+        ]
+      },
+      "path": "~/Permissions"
+    },
+    {
+      "name": "AutoTetraModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "auto_tetra_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/AutoTetraModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "AutoModuleScanner",
+      "type": "code",
+      "compiles": false,
+      "locked_code": true,
+      "registry_name": "auto_module_scanner",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/AutoModuleScanner.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKLichWhisper",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_lich_whisper",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLichWhisper.java"
+        ]
+      },
+      "path": "~/Log"
+    },
+    {
+      "name": "BCKLichWhisperModule",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_lich_whisper_module",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKLichWhisperModule.java"
+        ]
+      },
+      "path": "~/Modules"
+    },
+    {
+      "name": "BCKUserdataEventHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_userdata_event_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKUserdataEventHandler.java"
+        ]
+      },
+      "path": "~/data"
+    },
+    {
+      "name": "BCKCore",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_core",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKCore.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKCoreEventHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_core_event_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKCoreEventHandler.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "LichServerHooks",
+      "type": "code",
+      "compiles": false,
+      "locked_code": true,
+      "registry_name": "lich_server_hooks",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/LichServerHooks.java"
+        ]
+      },
+      "path": "~/Core"
+    },
+    {
+      "name": "BCKServerdataEventHandler",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "bck_serverdata_event_handler",
+      "metadata": {
+        "files": [
+          "src/main/java/fr/bck/tetralibs/BCKServerdataEventHandler.java"
+        ]
+      },
+      "path": "~/data"
+    }
+  ],
+  "variable_elements": [],
+  "sound_elements": [],
+  "tag_elements": {},
+  "tab_element_order": {},
+  "language_map": {
+    "en_us": {
+      "item_group.tetralibs.tetra_libs_reforged_tab": "TetraLibs: Reforged"
+    }
+  },
+  "foldersRoot": {
+    "name": "~",
+    "children": [
+      {
+        "name": "Core",
+        "children": []
+      },
+      {
+        "name": "Permissions",
+        "children": []
+      },
+      {
+        "name": "Backpack",
+        "children": []
+      },
+      {
+        "name": "Home",
+        "children": []
+      },
+      {
+        "name": "Spawn",
+        "children": []
+      },
+      {
+        "name": "Level",
+        "children": []
+      },
+      {
+        "name": "Skill",
+        "children": []
+      },
+      {
+        "name": "Recipe",
+        "children": []
+      },
+      {
+        "name": "Region",
+        "children": []
+      },
+      {
+        "name": "Log",
+        "children": []
+      },
+      {
+        "name": "Tooltip",
+        "children": []
+      },
+      {
+        "name": "LichEye",
+        "children": []
+      },
+      {
+        "name": "Modules",
+        "children": []
+      },
+      {
+        "name": "data",
+        "children": []
+      }
+    ]
+  },
+  "workspaceSettings": {
+    "modid": "tetralibs",
+    "modName": "TetraLibs: Reforged",
+    "version": "0.0.1",
+    "author": "DragClover (BCK)",
+    "websiteURL": "https://www.bck-inc.fr/tetralibs",
+    "license": "MIT License",
+    "serverSideOnly": false,
+    "modPicture": "tetralibs_reforged-nbc-400",
+    "requiredMods": [],
+    "dependencies": [],
+    "dependants": [],
+    "mcreatorDependencies": [],
+    "currentGenerator": "forge-1.20.1",
+    "credits": "0_0",
+    "modElementsPackage": "fr.bck.tetralibs"
+  },
+  "mcreatorVersion": 202500110519
+}

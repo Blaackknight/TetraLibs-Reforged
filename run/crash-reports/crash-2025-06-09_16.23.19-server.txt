@@ -1,0 +1,95 @@
+---- Minecraft Crash Report ----
+// There are four lights!
+
+Time: 2025-06-09 16:23:19
+Description: Exception in server tick loop
+
+java.lang.NullPointerException: Cannot invoke "java.io.File.getPath()" because "fr.bck.tetralibs.warps.BCKWarpManager.warpFile" is null
+	at fr.bck.tetralibs.warps.BCKWarpManager.saveWarps(BCKWarpManager.java:135) ~[%23196!/:?] {re:classloading}
+	at fr.bck.tetralibs.module.BCKWarpsModule.onServerStopping(BCKWarpsModule.java:55) ~[%23196!/:?] {re:classloading}
+	at fr.bck.tetralibs.core.ModuleManager.processGenericEvent(ModuleManager.java:154) ~[%23196!/:?] {re:classloading}
+	at fr.bck.tetralibs.core.LichServerHooks.onServerStopping(LichServerHooks.java:40) ~[%23196!/:?] {re:classloading,pl:eventbus:A}
+	at fr.bck.tetralibs.core.__LichServerHooks_onServerStopping_ServerStoppingEvent.invoke(.dynamic) ~[%23196!/:?] {re:classloading,pl:eventbus:B}
+	at net.minecraftforge.eventbus.ASMEventHandler.invoke(ASMEventHandler.java:73) ~[eventbus-6.0.5.jar%23114!/:?] {}
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:315) ~[eventbus-6.0.5.jar%23114!/:?] {}
+	at net.minecraftforge.eventbus.EventBus.post(EventBus.java:296) ~[eventbus-6.0.5.jar%23114!/:?] {}
+	at net.minecraftforge.server.ServerLifecycleHooks.handleServerStopping(ServerLifecycleHooks.java:122) ~[forge-1.20.1-47.4.0_mapped_official_1.20.1.jar%23190%23197!/:?] {re:classloading}
+	at net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:671) ~[forge-1.20.1-47.4.0_mapped_official_1.20.1.jar%23191!/:?] {re:classloading,pl:accesstransformer:B}
+	at net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:251) ~[forge-1.20.1-47.4.0_mapped_official_1.20.1.jar%23191!/:?] {re:classloading,pl:accesstransformer:B}
+	at java.lang.Thread.run(Thread.java:840) ~[?:?] {}
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- System Details --
+Details:
+	Minecraft Version: 1.20.1
+	Minecraft Version ID: 1.20.1
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 17.0.15, Eclipse Adoptium
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode, sharing), Eclipse Adoptium
+	Memory: 453854744 bytes (432 MiB) / 1531969536 bytes (1461 MiB) up to 2107637760 bytes (2010 MiB)
+	CPUs: 8
+	Processor Vendor: GenuineIntel
+	Processor Name: Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz
+	Identifier: Intel64 Family 6 Model 142 Stepping 12
+	Microarchitecture: Whiskey Lake
+	Frequency (GHz): 1.80
+	Number of physical packages: 1
+	Number of physical CPUs: 4
+	Number of logical CPUs: 8
+	Graphics card #0 name: Intel(R) UHD Graphics 620
+	Graphics card #0 vendor: Intel Corporation (0x8086)
+	Graphics card #0 VRAM (MB): 1024.00
+	Graphics card #0 deviceId: 0x3ea0
+	Graphics card #0 versionInfo: DriverVersion=27.20.100.9079
+	Graphics card #1 name: NVIDIA GeForce MX250
+	Graphics card #1 vendor: NVIDIA (0x10de)
+	Graphics card #1 VRAM (MB): 2048.00
+	Graphics card #1 deviceId: 0x1d13
+	Graphics card #1 versionInfo: DriverVersion=32.0.15.7652
+	Memory slot #0 capacity (MB): 4096.00
+	Memory slot #0 clockSpeed (GHz): 2.67
+	Memory slot #0 type: DDR4
+	Memory slot #1 capacity (MB): 4096.00
+	Memory slot #1 clockSpeed (GHz): 2.67
+	Memory slot #1 type: DDR4
+	Virtual memory max (MB): 23907.36
+	Virtual memory used (MB): 18702.93
+	Swap memory total (MB): 15872.00
+	Swap memory used (MB): 4524.77
+	JVM Flags: 1 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump
+	Server Running: false
+	Player Count: 0 / 8; []
+	Data Packs: vanilla, mod:forge, mod:tetralibs
+	Enabled Feature Flags: minecraft:vanilla
+	World Generation: Stable
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'forge'; Server brand changed to 'forge'
+	Launched Version: MOD_DEV
+	ModLauncher: 10.0.9+10.0.9+main.dcd20f30
+	ModLauncher launch target: forgeclientuserdev
+	ModLauncher naming: mcp
+	ModLauncher services: 
+		mixin-0.8.5.jar mixin PLUGINSERVICE 
+		eventbus-6.0.5.jar eventbus PLUGINSERVICE 
+		fmlloader-1.20.1-47.4.0.jar slf4jfixer PLUGINSERVICE 
+		fmlloader-1.20.1-47.4.0.jar object_holder_definalize PLUGINSERVICE 
+		fmlloader-1.20.1-47.4.0.jar runtime_enum_extender PLUGINSERVICE 
+		fmlloader-1.20.1-47.4.0.jar capability_token_subclass PLUGINSERVICE 
+		accesstransformers-8.0.4.jar accesstransformer PLUGINSERVICE 
+		fmlloader-1.20.1-47.4.0.jar runtimedistcleaner PLUGINSERVICE 
+		modlauncher-10.0.9.jar mixin TRANSFORMATIONSERVICE 
+		modlauncher-10.0.9.jar fml TRANSFORMATIONSERVICE 
+	FML Language Providers: 
+		minecraft@1.0
+		lowcodefml@null
+		javafml@null
+	Mod List: 
+		forge-1.20.1-47.4.0_mapped_official_1.20.1.jar    |Minecraft                     |minecraft                     |1.20.1              |DONE      |Manifest: a1:d4:5e:04:4f:d3:d6:e0:7b:37:97:cf:77:b0:de:ad:4a:47:ce:8c:96:49:5f:0a:cf:8c:ae:b2:6d:4b:8a:3f
+		                                                  |Forge                         |forge                         |47.4.0              |DONE      |Manifest: NOSIGNATURE
+		main                                              |TetraLibs: Reforged           |tetralibs                     |0.0.1               |DONE      |Manifest: NOSIGNATURE
+	Crash Report UUID: ecd1d36e-8044-4f5d-863c-87637d1e5f88
+	FML: 47.4
+	Forge: net.minecraftforge:47.4.0

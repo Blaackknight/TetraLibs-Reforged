@@ -1,0 +1,30 @@
+{
+  "default_username": "Dev",
+  "uuid": "380df991-f603-344c-a090-369bad2a924a",
+  "economy": {
+    "money": 200.0,
+    "bank": 0.0
+  },
+  "lich_whisper": {
+    "level": 5.0
+  },
+  "first_join": false,
+  "tetra_page": {
+    "page": 1
+  },
+  "permissions": [
+    "bck"
+  ],
+  "first_joined": true,
+  "homes": [
+    {
+      "name": "caca",
+      "dimension": "minecraft:overworld",
+      "x": 3.4874945608823156,
+      "y": -60.0,
+      "z": -141.534000707185,
+      "pitch": -0.7296143,
+      "yaw": -8.831279
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+
+#Activation / désactivation des modules TetraLibs (client)
+[modules]
+	bck_spawn = false
+	bck_serverdata = false
+	bck_region = false
+	bck_lich_eye = false
+	bck_userdata = false
+	bck_tooltip = false
+	bck_economy_manager = false
+	bck_combat = false
+	bck_home = false
+	bck_recipe = false
+	bck_warps = false
+	bck_leveling = false
+	bck_backpack = false
+	bck_skill = false
+	bck_lich_clear = false
+	bck_lich_whisper = false
+

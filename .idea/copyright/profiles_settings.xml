@@ -1,0 +1,23 @@
+<component name="CopyrightManager">
+  <settings default="MIT">
+    <LanguageOptions name="JAVA">
+      <option name="addBlankBefore" value="true" />
+      <option name="fileLocation" value="3" />
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenBefore" value="84" />
+      <option name="lenAfter" value="84" />
+      <option name="box" value="true" />
+      <option name="filler" value="≡" />
+    </LanguageOptions>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="addBlankBefore" value="true" />
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenBefore" value="83" />
+      <option name="lenAfter" value="83" />
+      <option name="box" value="true" />
+      <option name="filler" value="≡" />
+    </LanguageOptions>
+  </settings>
+</component>
