@@ -1,8 +1,19 @@
 package fr.bck.tetralibs.handlers;
 
 
+import fr.bck.tetralibs.core.BCKUtils;
+import fr.bck.tetralibs.init.BCKSounds;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -23,21 +34,20 @@ package fr.bck.tetralibs.handlers;
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
-import fr.bck.tetralibs.core.BCKUtils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
-
 public class TetraLibsDevHandler {
-    public static void execute(Entity entity){
+    public static void execute(Entity entity) {
         if (!((entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY).getItem() == Blocks.AIR.asItem())) {
             if (entity instanceof Player _player && !_player.level().isClientSide()) {
                 _player.displayClientMessage(Component.literal(BCKUtils.ItemUtil.itemStackToString(_player.getMainHandItem())), false);
             }
         }
+    }
 
+    public static void play(Entity entity) {
+        BCKUtils.EntityUtil.playSoundTrackingEntityAndSelf(entity, BCKSounds.MII.get().getLocation(), 1.0f, 1.0f);
+    }
+
+    public static void stop(Entity entity) {
+        BCKUtils.EntityUtil.stopSoundTrackingEntityAndSelf(entity, BCKSounds.MII.get().getLocation());
     }
 }

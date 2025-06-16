@@ -2,7 +2,7 @@ package fr.bck.tetralibs.core;
 
 
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -23,15 +23,13 @@ package fr.bck.tetralibs.core;
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
-import fr.bck.tetralibs.client.tooltip.BCKTooltip;
-
 public class TetraLibs {
     public static final class Utils {
         // ta couleur
         public static final String color = "§c";
 
         // récupère la classe qui déclare Utils
-        private static final Class<?> PARENT = BCKTooltip.Utils.class.getDeclaringClass();
+        private static final Class<?> PARENT = Utils.class.getDeclaringClass();
 
         // full = couleur + nom simple de la classe parente
         public static final String full = color + PARENT.getSimpleName();

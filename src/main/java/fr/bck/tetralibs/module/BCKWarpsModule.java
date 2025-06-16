@@ -1,8 +1,20 @@
 package fr.bck.tetralibs.module;
 
 
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKLog;
+import fr.bck.tetralibs.warps.BCKWarpManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+
+import java.io.IOException;
+import java.util.Set;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,16 +34,6 @@ package fr.bck.tetralibs.module;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import fr.bck.tetralibs.core.BCKCore;
-import fr.bck.tetralibs.core.BCKLog;
-import fr.bck.tetralibs.warps.BCKWarpManager;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-
-import java.io.IOException;
-import java.util.Set;
 
 public class BCKWarpsModule extends CoreDependentModule {
     @Override

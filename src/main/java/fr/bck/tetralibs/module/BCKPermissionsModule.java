@@ -3,9 +3,9 @@ package fr.bck.tetralibs.module;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import fr.bck.tetralibs.TetralibsMod;
+import fr.bck.tetralibs.config.ModulesConfig;
 import fr.bck.tetralibs.core.*;
 import fr.bck.tetralibs.data.BCKServerdata;
-import fr.bck.tetralibs.data.BCKUserdata;
 import fr.bck.tetralibs.lich.BCKLichWhisper;
 import fr.bck.tetralibs.modules.permissions.PermEventHandler;
 import fr.bck.tetralibs.permissions.BCKPermissions;
@@ -32,6 +32,30 @@ import net.minecraftforge.eventbus.api.Event;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+
+
+
+/*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
+ ≡                                                                               ≡
+ ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
+ ≡ of this software and associated documentation files (the “Software”), to deal ≡
+ ≡ in the Software without restriction, including without limitation the rights  ≡
+ ≡ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ≡
+ ≡ copies of the Software, and to permit persons to whom the Software is         ≡
+ ≡ furnished to do so, subject to the following conditions:                      ≡
+ ≡                                                                               ≡
+ ≡ The above copyright notice and this permission notice shall be included in    ≡
+ ≡ all copies or substantial portions of the Software.                           ≡
+ ≡                                                                               ≡
+ ≡ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ≡
+ ≡ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ≡
+ ≡ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ≡
+ ≡ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ≡
+ ≡ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ≡
+ ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
+ ≡ SOFTWARE.                                                                     ≡
+ ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
 /**
  * Module « Permissions » – dépend de BCK Core.
@@ -72,9 +96,6 @@ public final class BCKPermissionsModule extends CoreDependentModule {
         double x = entity.getX();
         double y = entity.getY();
         double z = entity.getZ();
-
-        BCKUserdata.init(world, entity);
-        BCKUserdata.load(world, entity);
 
         BCKPermissions.defaultPermissions(entity, 2);
 
@@ -246,11 +267,10 @@ public final class BCKPermissionsModule extends CoreDependentModule {
         if (event != null && event.getEntity() != null) {
             Entity sourceentity = event.getSource().getEntity();
             if (sourceentity == null) return;
-            if (sourceentity.level().isClientSide()) {
-                return;
-            }
+            if (sourceentity.level().isClientSide()) return;
+
             if (BCKUtils.EntityUtil.isFakePlayer(sourceentity)) {
-                if (!((DataWrapper) BCKServerdata.data("server.allow_fake_players")).getBoolean()) {
+                if (((DataWrapper) BCKServerdata.data("server.allow_fake_players")).getBoolean()) {
                     return;
                 }
             }
@@ -281,14 +301,12 @@ public final class BCKPermissionsModule extends CoreDependentModule {
         // Si l'émetteur est un joueur, on récupère son nom.
         if (sender != null) player = sender.getDisplayName().getString();
 
-        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(((Component.translatable("lich_whisper.on_command").getString().replace("<player>", sender != null ? BCKUtils.TextUtil.universal(player, sender) : player)).replace("<cmd>", command))), 4);  // Niveau de log 4 pour une information de niveau intermédiaire.
-
         if ((sender instanceof Player || sender instanceof ServerPlayer) && !BCKPermissions.hasPermission(sender, converted)) {
             if (event.isCancelable()) {
                 event.setCanceled(true);
-                BCKLichWhisper.send(BCKUtils.TextUtil.toStyled((Component.translatable("lich_whisper.on_try_command").getString().replace("<player>", BCKUtils.TextUtil.universal(player, sender))).replace("<cmd>", command)), 4);
+                if (ModulesConfig.isEnabled(ModuleIds.BCK_LICH_WHISPER))
+                    BCKLichWhisper.send(BCKUtils.TextUtil.toStyled((Component.translatable("lich_whisper.on_try_command").getString().replace("<player>", BCKUtils.TextUtil.universal(player, sender))).replace("<cmd>", command)), 4);
             }
-            //SuperLog.info("TetraLibs/OnCommand", converted);
             if (sender instanceof Player _player && !_player.level().isClientSide())
                 _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", converted)), false);
         }

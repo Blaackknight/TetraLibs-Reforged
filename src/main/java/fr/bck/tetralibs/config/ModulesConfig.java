@@ -17,6 +17,30 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
+
+/*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
+ ≡                                                                               ≡
+ ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
+ ≡ of this software and associated documentation files (the “Software”), to deal ≡
+ ≡ in the Software without restriction, including without limitation the rights  ≡
+ ≡ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ≡
+ ≡ copies of the Software, and to permit persons to whom the Software is         ≡
+ ≡ furnished to do so, subject to the following conditions:                      ≡
+ ≡                                                                               ≡
+ ≡ The above copyright notice and this permission notice shall be included in    ≡
+ ≡ all copies or substantial portions of the Software.                           ≡
+ ≡                                                                               ≡
+ ≡ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ≡
+ ≡ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ≡
+ ≡ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ≡
+ ≡ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ≡
+ ≡ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ≡
+ ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
+ ≡ SOFTWARE.                                                                     ≡
+ ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
+
 /**
  * Configuration TOML côté serveur :
  * <code>config/tetralibs-server.toml</code>
@@ -46,10 +70,9 @@ public final class ModulesConfig {
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_LEVELING;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_PERMISSIONS;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_RECIPE;
-    public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_REGION;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_LICH_GUARD;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_SKILL;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_SPAWN;
-    public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_TOOLTIP;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_LICH_EYE;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_LICH_CLEAR;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_LICH_WHISPER;
@@ -90,10 +113,9 @@ public final class ModulesConfig {
         boolean defLeveling = false;
         boolean defPermissions = true;
         boolean defRecipe = true;
-        boolean defRegion = false;
+        boolean defLichGuard = false;
         boolean defSkill = false;
         boolean defSpawn = false;
-        boolean defTooltip = true;
         boolean defLichEye = false;
         boolean defLichClear = false;
         boolean defLichWhisper = true;
@@ -122,17 +144,14 @@ public final class ModulesConfig {
         ENABLE_BCK_RECIPE = BUILDER.define("bck_recipe", defRecipe);
         DEFAULTS.put("bck_recipe", defRecipe);
 
-        ENABLE_BCK_REGION = BUILDER.define("bck_region", defRegion);
-        DEFAULTS.put("bck_region", defRegion);
+        ENABLE_BCK_LICH_GUARD = BUILDER.define("bck_lich_guard", defLichGuard);
+        DEFAULTS.put("bck_lich_guard", defLichGuard);
 
         ENABLE_BCK_SKILL = BUILDER.define("bck_skill", defSkill);
         DEFAULTS.put("bck_skill", defSkill);
 
         ENABLE_BCK_SPAWN = BUILDER.define("bck_spawn", defSpawn);
         DEFAULTS.put("bck_spawn", defSpawn);
-
-        ENABLE_BCK_TOOLTIP = BUILDER.define("bck_tooltip", defTooltip);
-        DEFAULTS.put("bck_tooltip", defTooltip);
 
         ENABLE_BCK_LICH_EYE = BUILDER.define("bck_lich_eye", defLichEye);
         DEFAULTS.put("bck_lich_eye", defLichEye);
@@ -194,10 +213,9 @@ public final class ModulesConfig {
             case "bck_leveling" -> ENABLE_BCK_LEVELING.get();
             case "bck_permissions" -> ENABLE_BCK_PERMISSIONS.get();
             case "bck_recipe" -> ENABLE_BCK_RECIPE.get();
-            case "bck_region" -> ENABLE_BCK_REGION.get();
+            case "bck_lich_guard" -> ENABLE_BCK_LICH_GUARD.get();
             case "bck_skill" -> ENABLE_BCK_SKILL.get();
             case "bck_spawn" -> ENABLE_BCK_SPAWN.get();
-            case "bck_tooltip" -> ENABLE_BCK_TOOLTIP.get();
             case "bck_lich_eye" -> ENABLE_BCK_LICH_EYE.get();
             case "bck_lich_clear" -> ENABLE_BCK_LICH_CLEAR.get();
             case "bck_lich_whisper" -> ENABLE_BCK_LICH_WHISPER.get();
@@ -219,9 +237,7 @@ public final class ModulesConfig {
         // Force le chargement de tomlSection
         loadSectionIfNeeded();
 
-        return tomlSection.valueMap().keySet().stream().map(key -> ResourceLocation.fromNamespaceAndPath(TetralibsMod.MODID,   // ton modid
-                key        // le nom de la clé (= module id path)
-        )).collect(Collectors.toSet());
+        return tomlSection.valueMap().keySet().stream().map(key -> ResourceLocation.fromNamespaceAndPath(TetralibsMod.MODID, key)).collect(Collectors.toSet());
     }
 
     /**

@@ -1,8 +1,29 @@
 package fr.bck.tetralibs.module;
 
 
+import fr.bck.tetralibs.combat.BCKCombat;
+import fr.bck.tetralibs.combat.BCKCombatManager;
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKLog;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import static fr.bck.tetralibs.combat.BCKCombatManager.getCooldowns;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,25 +43,6 @@ package fr.bck.tetralibs.module;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import fr.bck.tetralibs.combat.BCKCombat;
-import fr.bck.tetralibs.combat.BCKCombatManager;
-import fr.bck.tetralibs.core.BCKCore;
-import fr.bck.tetralibs.core.BCKLog;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import static fr.bck.tetralibs.combat.BCKCombatManager.getCooldowns;
 
 public class BCKCombatModule extends CoreDependentModule {
     @Override

@@ -1,8 +1,14 @@
 package fr.bck.tetralibs.level;
 
 
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,10 +28,6 @@ package fr.bck.tetralibs.level;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
 
 public class BCKLevelingEvent {
     /**

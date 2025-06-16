@@ -5,11 +5,18 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import fr.bck.tetralibs.data.BCKServerdata;
 import fr.bck.tetralibs.data.BCKUserdata;
+import fr.bck.tetralibs.network.BCKSoundNetworkHandler;
+import fr.bck.tetralibs.network.sound.PlayLoopingSoundPacket;
+import fr.bck.tetralibs.network.sound.StopLoopingSoundPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
@@ -27,8 +34,11 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
@@ -36,6 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,8 +56,12 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.Team;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -62,6 +77,30 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
+
+/*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
+ ≡                                                                               ≡
+ ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
+ ≡ of this software and associated documentation files (the “Software”), to deal ≡
+ ≡ in the Software without restriction, including without limitation the rights  ≡
+ ≡ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ≡
+ ≡ copies of the Software, and to permit persons to whom the Software is         ≡
+ ≡ furnished to do so, subject to the following conditions:                      ≡
+ ≡                                                                               ≡
+ ≡ The above copyright notice and this permission notice shall be included in    ≡
+ ≡ all copies or substantial portions of the Software.                           ≡
+ ≡                                                                               ≡
+ ≡ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ≡
+ ≡ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ≡
+ ≡ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ≡
+ ≡ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ≡
+ ≡ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ≡
+ ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
+ ≡ SOFTWARE.                                                                     ≡
+ ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
 public class BCKUtils {
     public static final class Utils {
@@ -884,9 +923,96 @@ public class BCKUtils {
             }
             return guiItems;
         }
+
+        /**
+         * Vide l'intégralité de l'inventaire d'un joueur.
+         *
+         * @param player Le joueur dont l'inventaire doit être vidé.
+         */
+        public static void clearInventory(Player player) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            inv.clearContent(); // Supprime tout le contenu de l'inventaire.
+        }
+
+        /**
+         * Ajoute un objet spécifique à l'inventaire d'un joueur.
+         *
+         * @param player Le joueur auquel l'objet doit être ajouté.
+         * @param item   L'objet à ajouter.
+         */
+        public static void addItem(Player player, ItemStack item) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            inv.add(item); // Ajoute l'objet à l'inventaire.
+        }
+
+        /**
+         * Supprime un objet spécifique de l'inventaire d'un joueur.
+         *
+         * @param player Le joueur dont l'objet doit être retiré.
+         * @param item   L'objet à retirer.
+         */
+        public static void removeItem(Player player, ItemStack item) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            inv.removeItem(item); // Supprime l'objet de l'inventaire.
+        }
+
+        /**
+         * Récupère tous les objets présents dans l'inventaire d'un joueur.
+         *
+         * @param player Le joueur dont les objets doivent être récupérés.
+         * @return Une liste contenant tous les objets de l'inventaire.
+         */
+        public static NonNullList<ItemStack> getPlayerItems(Player player) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            return inv.items; // Retourne la liste des objets.
+        }
+
+        /**
+         * Vérifie si un joueur possède un objet spécifique dans son inventaire.
+         *
+         * @param player Le joueur a vérifié.
+         * @param item   L'objet à rechercher.
+         * @return true si le joueur possède l'objet, false sinon.
+         */
+        public static Boolean hasItem(Player player, ItemStack item) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            return inv.contains(item); // Retourne true si l'objet est présent, false sinon.
+        }
+
+        /**
+         * Compte le nombre d'instances d'un objet spécifique dans l'inventaire d'un joueur.
+         *
+         * @param player Le joueur dont l'inventaire doit être compté.
+         * @param item   L'objet à compter.
+         * @return Le nombre d'instances de l'objet dans l'inventaire.
+         */
+        public static int countItems(Player player, ItemStack item) {
+            Inventory inv = player.getInventory(); // Récupère l'inventaire du joueur.
+            return inv.countItem(item.getItem()); // Compte et retourne le nombre d'objets.
+        }
     }
 
     public abstract static class EntityUtil {
+        /**
+         * Permet d'obtenir l'item dans la main principal d'une entité
+         *
+         * @param entity L'entité à qui on récupère l'item
+         * @return L'item dans la main principal
+         */
+        public static ItemStack getMainHandItem(Entity entity) {
+            return (entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY);
+        }
+
+        /**
+         * Permet d'obtenir l'item dans la deuxième main d'une entité
+         *
+         * @param entity L'entité à qui on récupère l'item
+         * @return L'item dans la deuxième main
+         */
+        public static ItemStack getOffHandItem(Entity entity) {
+            return (entity instanceof LivingEntity _livEnt ? _livEnt.getOffhandItem() : ItemStack.EMPTY);
+        }
+
         /**
          * Joue un son à un volume et un pitch spécifiés pour une entité vivante.
          * Si l'entité est une instance de {@link LivingEntity}, le son est joué sur cette entité.
@@ -897,16 +1023,32 @@ public class BCKUtils {
          * @param pitch      Le pitch du son (valeur entre 0.5 et 2.0).
          */
         public static void playSound(Entity entity, SoundEvent soundEvent, double volume, double pitch) {
-            if (entity instanceof LivingEntity livingEntity) {
-                livingEntity.playSound(soundEvent, (float) volume, (float) pitch);
+            if (entity instanceof Player _pl && !_pl.level().isClientSide()) {
+                _pl.playSound(soundEvent, (float) volume, (float) pitch);
             }
+        }
+
+        /**
+         * Fait jouer un son au joueur et aux joueurs a proximité (en boucle)
+         *
+         * @param entity L'entité source
+         * @param loc    Location du son
+         * @param volume Volume
+         * @param pitch  Pitch
+         */
+        public static void playSoundTrackingEntityAndSelf(Entity entity, ResourceLocation loc, float volume, float pitch) {
+            BCKSoundNetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new PlayLoopingSoundPacket(entity.getId(), loc, volume, pitch));
+        }
+
+        public static void stopSoundTrackingEntityAndSelf(Entity entity, ResourceLocation loc) {
+            BCKSoundNetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new StopLoopingSoundPacket(loc));
         }
 
         /**
          * Téléporte une entité aux coordonnées spécifiées.
          * Si le paramètre {@code callback} est activé, un message de log est généré pour indiquer le déplacement.
          *
-         * @param entity   L'entité à téléporter.
+         * @param entity   L'entité a téléporté.
          * @param x        La coordonnée X de destination.
          * @param y        La coordonnée Y de destination.
          * @param z        La coordonnée Z de destination.
@@ -984,6 +1126,223 @@ public class BCKUtils {
 
             // Vérification du GameProfile
             return !player.getGameProfile().isComplete();// Ce n'est pas un Fake Player
+        }
+
+        /**
+         * Définit les dégâts de base d'une entité vivante.
+         *
+         * @param entity    L'entité à modifier.
+         * @param newDamage La nouvelle valeur des dégâts de base.
+         */
+        public static void setBaseDamage(Entity entity, double newDamage) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(newDamage);
+            }
+        }
+
+        /**
+         * Définit la vitesse d'attaque de base d'une entité vivante.
+         *
+         * @param entity   L'entité à modifier.
+         * @param newSpeed La nouvelle valeur de la vitesse d'attaque de base.
+         */
+        public static void setBaseAttackSpeed(Entity entity, double newSpeed) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.ATTACK_SPEED)).setBaseValue(newSpeed);
+            }
+        }
+
+        /**
+         * Définit la vitesse de déplacement de base d'une entité vivante.
+         *
+         * @param entity   L'entité à modifier.
+         * @param newSpeed La nouvelle valeur de la vitesse de déplacement de base.
+         */
+        public static void setBaseSpeed(Entity entity, double newSpeed) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(newSpeed);
+            }
+        }
+
+        /**
+         * Définit la santé maximale de base d'une entité vivante.
+         *
+         * @param entity    L'entité à modifier.
+         * @param newHealth La nouvelle valeur de la santé maximale de base.
+         */
+        public static void setBaseMaxHealth(Entity entity, double newHealth) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(newHealth);
+            }
+        }
+
+        /**
+         * Définit la force de saut de base d'une entité vivante.
+         *
+         * @param entity          L'entité à modifier.
+         * @param newJumpStrength La nouvelle valeur de la force de saut de base.
+         */
+        public static void setBaseJumpStrength(Entity entity, double newJumpStrength) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.JUMP_STRENGTH)).setBaseValue(newJumpStrength);
+            }
+        }
+
+        /**
+         * Définit l'armure de base d'une entité vivante.
+         *
+         * @param entity   L'entité à modifier.
+         * @param newArmor La nouvelle valeur de l'armure de base.
+         */
+        public static void setBaseArmor(Entity entity, double newArmor) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.ARMOR)).setBaseValue(newArmor);
+            }
+        }
+
+        /**
+         * Définit la robustesse de l'armure de base d'une entité vivante.
+         *
+         * @param entity            L'entité à modifier.
+         * @param newArmorToughness La nouvelle valeur de la robustesse de l'armure de base.
+         */
+        public static void setBaseArmorToughness(Entity entity, double newArmorToughness) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.ARMOR_TOUGHNESS)).setBaseValue(newArmorToughness);
+            }
+        }
+
+        /**
+         * Définit le recul d'attaque de base d'une entité vivante.
+         *
+         * @param entity             L'entité à modifier.
+         * @param newAttackKnockback La nouvelle valeur du recul d'attaque de base.
+         */
+        public static void setBaseAttackKnockback(Entity entity, double newAttackKnockback) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.ATTACK_KNOCKBACK)).setBaseValue(newAttackKnockback);
+            }
+        }
+
+        /**
+         * Définit la résistance au recul de base d'une entité vivante.
+         *
+         * @param entity                 L'entité à modifier.
+         * @param newKnockbackResistance La nouvelle valeur de la résistance au recul de base.
+         */
+        public static void setBaseKnockbackResistance(Entity entity, double newKnockbackResistance) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(newKnockbackResistance);
+            }
+        }
+
+        /**
+         * Définit la chance de base d'une entité vivante.
+         *
+         * @param entity  L'entité à modifier.
+         * @param newLuck La nouvelle valeur de la chance de base.
+         */
+        public static void setBaseLuck(Entity entity, double newLuck) {
+            if (entity instanceof LivingEntity livingEntity) {
+                Objects.requireNonNull(livingEntity.getAttribute(Attributes.LUCK)).setBaseValue(newLuck);
+            }
+        }
+
+        /**
+         * Récupère la valeur de dégâts de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur des dégâts de base.
+         * @return La valeur des dégâts de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseDamage(Entity entity) {
+            if (entity instanceof LivingEntity livingEntity) {
+                return livingEntity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur des dégâts actuels d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur des dégâts actuels.
+         * @return La valeur des dégâts actuels, ou 0.0 si l'entité n'est pas vivante ou n'a pas cet attribut.
+         */
+        public static double getDamage(Entity entity) {
+            if (entity instanceof LivingEntity livingEntity) {
+                AttributeInstance attackDamageInstance = livingEntity.getAttribute(Attributes.ATTACK_DAMAGE);
+                if (attackDamageInstance != null) {
+                    return attackDamageInstance.getValue();
+                }
+                return 0.0;
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur de la robustesse de l'armure de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur de la robustesse de l'armure de base.
+         * @return La valeur de la robustesse de l'armure de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseArmorToughness(Entity entity) {
+            if (entity instanceof LivingEntity livingEntity) {
+                return livingEntity.getAttributeBaseValue(Attributes.ARMOR_TOUGHNESS);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur de la force de saut de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur de la force de saut de base.
+         * @return La valeur de la force de saut de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseJumpStrength(Entity entity) {
+            if (entity instanceof LivingEntity livingEntity) {
+                return livingEntity.getAttributeBaseValue(Attributes.JUMP_STRENGTH);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur du recul d'attaque de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur du recul d'attaque de base.
+         * @return La valeur du recul d'attaque de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseArmorKnockback(Entity entity) {
+            if (entity instanceof LivingEntity livingEntity) {
+                return livingEntity.getAttributeBaseValue(Attributes.ATTACK_KNOCKBACK);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur de la résistance au recul de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur de la résistance au recul de base.
+         * @return La valeur de la résistance au recul de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseKnockbackResistance(Entity entity) {
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) entity;
+                return livingEntity.getAttributeBaseValue(Attributes.KNOCKBACK_RESISTANCE);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère la valeur de la chance de base d'une entité vivante.
+         *
+         * @param entity L'entité dont on souhaite obtenir la valeur de la chance de base.
+         * @return La valeur de la chance de base, ou 0.0 si l'entité n'est pas vivante.
+         */
+        public static double getBaseLuck(Entity entity) {
+            if (entity instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) entity;
+                return livingEntity.getAttributeBaseValue(Attributes.LUCK);
+            }
+            return 0.0;
         }
     }
 
@@ -1109,6 +1468,682 @@ public class BCKUtils {
                 }
             }
             return "unknown_world";
+        }
+
+        /**
+         * Récupère une équipe par son nom.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe.
+         * @return L'objet Team correspondant au nom fourni, ou null si l'équipe n'existe pas.
+         */
+        public static Team getTeam(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                for (Team team : scoreboard.getPlayerTeams()) {
+                    if (team.getName().equals(teamName)) {
+                        return team;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Récupère le nombre de joueurs dans une équipe.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe.
+         * @return Le nombre de joueurs dans l'équipe, ou 0 si l'équipe n'existe pas.
+         */
+        public static double getPlayersNumber(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                Team team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getPlayers().size();
+            }
+            return 0.0;
+        }
+
+        /**
+         * Récupère le nombre total d'équipes.
+         *
+         * @param world Le monde dans lequel chercher les équipes.
+         * @return Le nombre total d'équipes.
+         */
+        public static double getTeamsNumber(LevelAccessor world) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                return scoreboard.getPlayerTeams().size();
+            }
+            return 0.0;
+        }
+
+        /**
+         * Vérifie si une équipe existe dans le monde.
+         *
+         * @param world    Le monde dans lequel vérifier l'existence de l'équipe.
+         * @param teamName Le nom de l'équipe à vérifier.
+         * @return true si l'équipe existe, false sinon.
+         */
+        public static boolean teamExists(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+
+                for (Team team : scoreboard.getPlayerTeams()) {
+                    if (team.getName().equals(teamName)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Récupère le nom de l'équipe d'un joueur.
+         *
+         * @param world  Le monde dans lequel chercher.
+         * @param entity L'entité (joueur) pour laquelle obtenir le nom de l'équipe.
+         * @return Le nom de l'équipe, ou "null" si aucune équipe n'est trouvée.
+         */
+        public static String getTeamName(LevelAccessor world, Entity entity) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                if (entity instanceof LivingEntity livingEntity) {
+                    String teamName = "";
+                    for (Team team : scoreboard.getPlayerTeams()) {
+                        String temp = team.getName();
+                        Collection<String> list = team.getPlayers();
+                        for (String x : list) {
+                            if ((livingEntity.getDisplayName().getString()).equals(x)) {
+                                teamName = temp;
+                            }
+                        }
+                        return teamName;
+                    }
+                }
+            }
+            return "null";
+        }
+
+        /**
+         * Modifie les règles de collision d'une équipe.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe à modifier.
+         * @param rule     La règle de collision à appliquer sous forme de chaîne de caractères.
+         * @param callback Si true, affiche un message de log après avoir changé la règle de collision.
+         */
+        public static void setCollisionRules(LevelAccessor world, String teamName, String rule, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                Team.CollisionRule r = colisionRulesFromString(rule);
+                assert team != null;
+                assert r != null;
+                team.setCollisionRule(r);
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "CollisionRules for " + teamName + " has been set to " + rule);
+                }
+            }
+        }
+
+        /**
+         * Modifie les règles de collision d'une équipe.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe à modifier.
+         * @param rule     La règle de collision à appliquer sous forme de chaîne de caractères.
+         */
+        public static void setCollisionRules(LevelAccessor world, String teamName, String rule) {
+            setCollisionRules(world, teamName, rule, false);
+        }
+
+        /**
+         * Modifie la couleur d'une équipe.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe à modifier.
+         * @param color    La couleur à appliquer sous forme de chaîne de caractères.
+         * @param callback Si true, affiche un message de log après avoir changé la couleur.
+         */
+        public static void setColor(LevelAccessor world, String teamName, String color, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setColor(colorFromString(color));
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "Color for " + teamName + " has been set to " + color);
+                }
+            }
+        }
+
+        /**
+         * Modifie la couleur d'une équipe.
+         *
+         * @param world    Le monde dans lequel chercher l'équipe.
+         * @param teamName Le nom de l'équipe à modifier.
+         * @param color    La couleur à appliquer sous forme de chaîne de caractères.
+         */
+        public static void setColor(LevelAccessor world, String teamName, String color) {
+            setCollisionRules(world, teamName, color, false);
+        }
+
+        /**
+         * Modifie la visibilité du message de décès d'une équipe.
+         *
+         * @param world      Le monde dans lequel chercher l'équipe.
+         * @param teamName   Le nom de l'équipe à modifier.
+         * @param visibility La visibilité du message de décès sous forme de chaîne de caractères.
+         * @param callback   Si true, affiche un message de log après avoir changé la visibilité.
+         */
+        public static void setDeathMessageVisibility(LevelAccessor world, String teamName, String visibility, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                Team.Visibility v = teamVisibilityFromString(visibility);
+                assert team != null;
+                assert v != null;
+                team.setDeathMessageVisibility(v);
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "DeathMessageVisibility for " + teamName + " has been set to " + visibility);
+                }
+            }
+        }
+
+        /**
+         * Modifie la visibilité du message de décès d'une équipe.
+         *
+         * @param world      Le monde dans lequel chercher l'équipe.
+         * @param teamName   Le nom de l'équipe à modifier.
+         * @param visibility La visibilité du message de décès sous forme de chaîne de caractères.
+         */
+        public static void setDeathMessageVisibility(LevelAccessor world, String teamName, String visibility) {
+            setDeathMessageVisibility(world, teamName, visibility, false);
+        }
+
+        /**
+         * Définit le nom affiché pour une équipe donnée.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param name     Le nouveau nom affiché.
+         * @param callback Si true, enregistre un log pour indiquer que le nom a été modifié.
+         */
+        public static void setDisplayName(LevelAccessor world, String teamName, String name, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setDisplayName(Component.literal(name)); // Met à jour le nom affiché de l'équipe.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "DisplayName for " + teamName + " has been set to " + name);
+                }
+            }
+        }
+
+        /**
+         * Définit le nom affiché pour une équipe donnée sans log de callback.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param name     Le nouveau nom affiché.
+         */
+        public static void setDisplayName(LevelAccessor world, String teamName, String name) {
+            setDisplayName(world, teamName, name, false);
+        }
+
+        /**
+         * Définit si les membres de l'équipe peuvent se causer des dégâts entre eux (FriendlyFire).
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param fire     Si true, les membres de l'équipe peuvent se causer des dégâts entre eux.
+         * @param callback Si true, enregistre un log pour indiquer que l'option a été modifiée.
+         */
+        public static void setFriendlyFire(LevelAccessor world, String teamName, Boolean fire, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setAllowFriendlyFire(fire); // Active ou désactive le friendly fire pour l'équipe.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "FriendlyFire for " + teamName + " has been set to " + fire);
+                }
+            }
+        }
+
+        /**
+         * Définit si les membres de l'équipe peuvent se causer des dégâts entre eux sans log de callback.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param fire     Si true, les membres de l'équipe peuvent se causer des dégâts entre eux.
+         */
+        public static void setFriendlyFire(LevelAccessor world, String teamName, Boolean fire) {
+            setFriendlyFire(world, teamName, fire, false);
+        }
+
+        /**
+         * Définit la visibilité des étiquettes de nom pour les membres d'une équipe.
+         *
+         * @param world      Le monde dans lequel l'équipe est située.
+         * @param teamName   Le nom de l'équipe.
+         * @param visibility La nouvelle visibilité de l'étiquette de nom.
+         * @param callback   Si true, enregistre un log pour indiquer que la visibilité a été modifiée.
+         */
+        public static void setNametagVisibility(LevelAccessor world, String teamName, String visibility, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                Team.Visibility v = teamVisibilityFromString(visibility);
+                assert v != null;
+                assert team != null;
+                team.setNameTagVisibility(v); // Met à jour la visibilité des étiquettes de nom.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "NametagVisibility for " + teamName + " has been set to " + visibility);
+                }
+            }
+        }
+
+        /**
+         * Définit la visibilité des étiquettes de nom sans log de callback.
+         *
+         * @param world      Le monde dans lequel l'équipe est située.
+         * @param teamName   Le nom de l'équipe.
+         * @param visibility La nouvelle visibilité de l'étiquette de nom.
+         */
+        public static void setNametagVisibility(LevelAccessor world, String teamName, String visibility) {
+            setNametagVisibility(world, teamName, visibility, false);
+        }
+
+        /**
+         * Définit le préfixe des joueurs dans une équipe.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param prefix   Le préfixe à appliquer.
+         * @param callback Si true, enregistre un log pour indiquer que le préfixe a été modifié.
+         */
+        public static void setPrefix(LevelAccessor world, String teamName, String prefix, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setPlayerPrefix(Component.literal(prefix)); // Met à jour le préfixe de l'équipe.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "Prefix for " + teamName + " has been set to " + prefix);
+                }
+            }
+        }
+
+        /**
+         * Définit le préfixe des joueurs dans une équipe sans log de callback.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param prefix   Le préfixe à appliquer.
+         */
+        public static void setPrefix(LevelAccessor world, String teamName, String prefix) {
+            setPrefix(world, teamName, prefix, false);
+        }
+
+        /**
+         * Définit si les membres de l'équipe peuvent voir les invisibles alliés.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param see      Si true, les membres de l'équipe peuvent voir les invisibles alliés.
+         * @param callback Si true, enregistre un log pour indiquer que la visibilité a été modifiée.
+         */
+        public static void setSeeFriendlyInvisibles(LevelAccessor world, String teamName, Boolean see, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setSeeFriendlyInvisibles(see); // Active ou désactive la possibilité de voir les invisibles alliés.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "SeeFriendlyInvisibles for " + teamName + " has been set to " + see);
+                }
+            }
+        }
+
+        /**
+         * Définit si les membres de l'équipe peuvent voir les invisibles alliés sans log de callback.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param see      Si true, les membres de l'équipe peuvent voir les invisibles alliés.
+         */
+        public static void setSeeFriendlyInvisibles(LevelAccessor world, String teamName, Boolean see) {
+            setSeeFriendlyInvisibles(world, teamName, see, false);
+        }
+
+        /**
+         * Définit le suffixe des joueurs dans une équipe.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param suffix   Le suffixe à appliquer.
+         * @param callback Si true, enregistre un log pour indiquer que le suffixe a été modifié.
+         */
+        public static void setSuffix(LevelAccessor world, String teamName, String suffix, boolean callback) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                team.setPlayerSuffix(Component.literal(suffix)); // Met à jour le suffixe de l'équipe.
+                if (callback) {
+                    BCKLog.info(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/ServerUtil", "Suffix for " + teamName + " has been set to " + suffix);
+                }
+            }
+        }
+
+        /**
+         * Définit le suffixe des joueurs dans une équipe sans log de callback.
+         *
+         * @param world    Le monde dans lequel l'équipe est située.
+         * @param teamName Le nom de l'équipe.
+         * @param suffix   Le suffixe a appliqué.
+         */
+        public static void setSuffix(LevelAccessor world, String teamName, String suffix) {
+            setSuffix(world, teamName, suffix, false);
+        }
+
+        /**
+         * Récupère la règle de collision brute pour une équipe donnée.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return La règle de collision de l'équipe.
+         */
+        public static Team.CollisionRule getRawCollisionRules(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getCollisionRule();
+            }
+            return Team.CollisionRule.ALWAYS;
+        }
+
+        /**
+         * Récupère la règle de collision sous forme de chaîne pour une équipe donnée.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return La règle de collision sous forme de chaîne.
+         */
+        public static String getStringCollisionRules(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return colisionRulesToString(team.getCollisionRule());
+            }
+            return "always";
+        }
+
+        /**
+         * Récupère la couleur brute de l'équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return La couleur de l'équipe.
+         */
+        public static ChatFormatting getRawColor(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getColor();
+            }
+            return ChatFormatting.WHITE;
+        }
+
+        /**
+         * Récupère la couleur de l'équipe sous forme de chaîne.
+         *
+         * @param world     L'environnement de jeu.
+         * @param teamName  Le nom de l'équipe.
+         * @param lowercase Si vrai, retourne la couleur en minuscules.
+         * @return La couleur de l'équipe sous forme de chaîne.
+         */
+        public static String getStringColor(LevelAccessor world, String teamName, Boolean lowercase) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                String color = "" + team.getColor();
+                if (lowercase) {
+                    color = color.toLowerCase();
+                }
+                return color;
+            }
+            if (lowercase) {
+                return "white";
+            } else {
+                return "WHITE";
+            }
+        }
+
+        /**
+         * Récupère la visibilité des messages de mort pour une équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return La visibilité des messages de mort.
+         */
+        public static Team.Visibility getRawDeathMessageVisibility(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getDeathMessageVisibility();
+            }
+            return Team.Visibility.ALWAYS;
+        }
+
+        /**
+         * Récupère la visibilité des messages de mort sous forme de chaîne.
+         *
+         * @param world     L'environnement de jeu.
+         * @param teamName  Le nom de l'équipe.
+         * @param lowercase Si vrai, retourne la visibilité en minuscules.
+         * @return La visibilité des messages de mort sous forme de chaîne.
+         */
+        public static String getStringDeathMessageVisibility(LevelAccessor world, String teamName, Boolean lowercase) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                String msg = "" + team.getDeathMessageVisibility();
+                if (lowercase) {
+                    msg = msg.toLowerCase();
+                }
+                return msg;
+            }
+            if (lowercase) {
+                return "always";
+            } else {
+                return "ALWAYS";
+            }
+        }
+
+        /**
+         * Récupère le nom affiché pour une équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return Le nom affiché de l'équipe.
+         */
+        public static String getDisplayName(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getDisplayName().getString();
+            }
+            return "null";
+        }
+
+        /**
+         * Récupère la visibilité des étiquettes de nom pour une équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return La visibilité des étiquettes de nom.
+         */
+        public static Team.Visibility getRawNametagVisibility(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getNameTagVisibility();
+            }
+            return Team.Visibility.ALWAYS;
+        }
+
+        /**
+         * Récupère la visibilité des étiquettes de nom sous forme de chaîne.
+         *
+         * @param world     L'environnement de jeu.
+         * @param teamName  Le nom de l'équipe.
+         * @param lowercase Si vrai, retourne la visibilité en minuscules.
+         * @return La visibilité des étiquettes de nom sous forme de chaîne.
+         */
+        public static String getStringNametagVisibility(LevelAccessor world, String teamName, Boolean lowercase) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                String msg = "" + team.getNameTagVisibility();
+                if (lowercase) {
+                    msg = msg.toLowerCase();
+                }
+                return msg;
+            }
+            if (lowercase) {
+                return "always";
+            } else {
+                return "ALWAYS";
+            }
+        }
+
+        /**
+         * Récupère le préfixe d'une équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return Le préfixe de l'équipe.
+         */
+        public static String getPrefix(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getPlayerPrefix().getString();
+            }
+            return "null";
+        }
+
+        /**
+         * Récupère le suffixe d'une équipe.
+         *
+         * @param world    L'environnement de jeu.
+         * @param teamName Le nom de l'équipe.
+         * @return Le suffixe de l'équipe.
+         */
+        public static String getSuffix(LevelAccessor world, String teamName) {
+            if (world instanceof Level level) {
+                Scoreboard scoreboard = level.getScoreboard();
+                PlayerTeam team = scoreboard.getPlayerTeam(teamName);
+                assert team != null;
+                return team.getPlayerSuffix().getString();
+            }
+            return "null";
+        }
+
+        /**
+         * Convertit une chaîne en une règle de collision pour une équipe.
+         *
+         * @param str La chaîne représentant la règle de collision.
+         * @return La règle de collision correspondante.
+         */
+        public static Team.CollisionRule colisionRulesFromString(String str) {
+            return switch (str.toLowerCase()) {
+                case "always" -> Team.CollisionRule.ALWAYS;
+                case "never" -> Team.CollisionRule.NEVER;
+                case "pushotherteams" -> Team.CollisionRule.PUSH_OTHER_TEAMS;
+                case "pushownteam" -> Team.CollisionRule.PUSH_OWN_TEAM;
+                default -> null;
+            };
+        }
+
+        /**
+         * Convertit une règle de collision en une chaîne.
+         *
+         * @param str La règle de collision à convertir.
+         * @return La règle de collision sous forme de chaîne.
+         */
+        public static String colisionRulesToString(Team.CollisionRule str) {
+            if (str == Team.CollisionRule.ALWAYS) {
+                return "always";
+            } else if (str == Team.CollisionRule.NEVER) {
+                return "never";
+            } else if (str == Team.CollisionRule.PUSH_OTHER_TEAMS) {
+                return "pushotherteams";
+            } else if (str == Team.CollisionRule.PUSH_OWN_TEAM) {
+                return "pushownteam";
+            } else {
+                return "null";
+            }
+        }
+
+        /**
+         * Convertit une chaîne en une couleur de texte Minecraft.
+         *
+         * @param str La chaîne représentant la couleur.
+         * @return La couleur correspondante sous forme de `ChatFormatting`.
+         */
+        public static ChatFormatting colorFromString(String str) {
+            return switch (str.toLowerCase()) {
+                case "aqua" -> ChatFormatting.AQUA;
+                case "black" -> ChatFormatting.BLACK;
+                case "blue" -> ChatFormatting.BLUE;
+                case "dark_aqua" -> ChatFormatting.DARK_AQUA;
+                case "dark_blue" -> ChatFormatting.DARK_BLUE;
+                case "dark_gray" -> ChatFormatting.DARK_GRAY;
+                case "dark_green" -> ChatFormatting.DARK_GREEN;
+                case "dark_purple" -> ChatFormatting.DARK_PURPLE;
+                case "dark_red" -> ChatFormatting.DARK_RED;
+                case "gold" -> ChatFormatting.GOLD;
+                case "gray" -> ChatFormatting.GRAY;
+                case "green" -> ChatFormatting.GREEN;
+                case "light_purple" -> ChatFormatting.LIGHT_PURPLE;
+                case "red" -> ChatFormatting.RED;
+                case "reset" -> ChatFormatting.RESET;
+                case "yellow" -> ChatFormatting.YELLOW;
+                default -> ChatFormatting.WHITE;
+            };
+        }
+
+        /**
+         * Convertit une chaîne en une visibilité de l'équipe.
+         *
+         * @param str La chaîne représentant la visibilité de l'équipe.
+         * @return La visibilité de l'équipe correspondante.
+         */
+        public static Team.Visibility teamVisibilityFromString(String str) {
+            return switch (str.toLowerCase()) {
+                case "always" -> Team.Visibility.ALWAYS;
+                case "never" -> Team.Visibility.NEVER;
+                case "hideforotherteams" -> Team.Visibility.HIDE_FOR_OTHER_TEAMS;
+                case "hideforownteam" -> Team.Visibility.HIDE_FOR_OWN_TEAM;
+                default -> null;
+            };
         }
     }
 
@@ -1480,6 +2515,38 @@ public class BCKUtils {
          */
         public static String convertNumberToString(double number) {
             return convertNumberToString(number, 1);
+        }
+    }
+
+    public abstract static class ParticleUtil {
+        public static void showDeniedParticles(ServerPlayer player, SimpleParticleType particle, BlockPos pos) {
+            ServerLevel level = player.serverLevel();
+
+            /* 1. Choisissez le type de particule :
+               - SOUL    : bleu/vert fantomatique
+               - SMOKE   : fumée grise
+               - ENCHANT : petites étoiles violettes
+               - CRIT    : éclat blanc
+             */
+
+            /* 2. Appelez l'overload ciblé :
+                  sendParticles(ServerPlayer cible, ParticleOptions type, boolean longDistance,
+                                double x, double y, double z,
+                                int count,
+                                double offsetX, double offsetY, double offsetZ,
+                                double speed)
+               - longDistance = false  → inutile de le transmettre à > 32 blocs
+               - count        = nb de particules
+               - offsets      = « épaisseur » du nuage (0.25 = ¼ bloc)
+               - speed        = vélocité (0.0 = statique)
+            */
+            level.sendParticles(player,                // 👈 uniquement ce joueur
+                    particle, false,                 // longDistance
+                    pos.getX() + 0.5,      // centre du bloc
+                    pos.getY() + 1.0, pos.getZ() + 0.5, 20,                    // quantité
+                    0.2, 0.3, 0.2,         // offsets XYZ
+                    0.01                   // vitesse
+            );
         }
     }
 }

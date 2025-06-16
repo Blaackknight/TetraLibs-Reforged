@@ -134,7 +134,16 @@ Adding Libraries to Inheritance
 Reading Input: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\libs\modid-1.0.jar
 Adding input to inheritance map
 Processing entries
+Conflicting propagated mapping for fr/bck/tetralibs/client/sounds/LoopingEntitySoundInstance/tick()V from net/minecraft/client/resources/sounds/TickableSoundInstance/tick()V: tick -> m_7788_
 Conflicting propagated mapping for net/minecraft/world/entity/LivingEntity/lambda$addAdditionalSaveData$3(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/nbt/Tag;)V from net/minecraft/world/entity/player/Player/lambda$addAdditionalSaveData$3(Lnet/minecraft/nbt/CompoundTag;Lnet/minecraft/nbt/Tag;)V: lambda$addAdditionalSaveData$3 -> m_219754_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z from net/minecraft/server/level/ServerPlayer/isInvulnerableTo(Lnet/minecraft/world/damagesource/DamageSource;)Z: isInvulnerableTo -> m_6673_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/canHarmPlayer(Lnet/minecraft/world/entity/player/Player;)Z from net/minecraft/server/level/ServerPlayer/canHarmPlayer(Lnet/minecraft/world/entity/player/Player;)Z: canHarmPlayer -> m_7099_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/updateOptions(Lnet/minecraft/network/protocol/game/ServerboundClientInformationPacket;)V from net/minecraft/server/level/ServerPlayer/updateOptions(Lnet/minecraft/network/protocol/game/ServerboundClientInformationPacket;)V: updateOptions -> m_9156_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/displayClientMessage(Lnet/minecraft/network/chat/Component;Z)V from net/minecraft/server/level/ServerPlayer/displayClientMessage(Lnet/minecraft/network/chat/Component;Z)V: displayClientMessage -> m_5661_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/die(Lnet/minecraft/world/damagesource/DamageSource;)V from net/minecraft/server/level/ServerPlayer/die(Lnet/minecraft/world/damagesource/DamageSource;)V: die -> m_6667_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/tick()V from net/minecraft/server/level/ServerPlayer/tick()V: tick -> m_8119_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/getServer()Lnet/minecraft/server/MinecraftServer; from net/minecraft/world/entity/Entity/getServer()Lnet/minecraft/server/MinecraftServer;: getServer -> m_20194_
+Conflicting propagated mapping for net/minecraftforge/common/util/FakePlayer/awardStat(Lnet/minecraft/stats/Stat;I)V from net/minecraft/server/level/ServerPlayer/awardStat(Lnet/minecraft/stats/Stat;I)V: awardStat -> m_6278_
 Adding extras
 Sorting
 Writing Output: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\reobfJar\output.jar
@@ -145,19 +154,58 @@ Writing Output: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\reobfJar\ou
   assets/tetralibs/
   assets/tetralibs/lang/
   assets/tetralibs/lang/en_us.json
+  assets/tetralibs/sounds.json
+  assets/tetralibs/sounds/
+  assets/tetralibs/sounds/mii.ogg
   assets/tetralibs/textures/
   assets/tetralibs/textures/tetralibs_reforged-nbc-400.png
   fr/
   fr/bck/
   fr/bck/tetralibs/
   fr/bck/tetralibs/TetralibsMod.class
+  fr/bck/tetralibs/client/
+  fr/bck/tetralibs/client/ClientSoundHandler.class
+  fr/bck/tetralibs/client/sounds/
+  fr/bck/tetralibs/client/sounds/LoopingEntitySoundInstance.class
+  fr/bck/tetralibs/client/tooltip/
+  fr/bck/tetralibs/client/tooltip/BCKTooltip$Utils.class
+  fr/bck/tetralibs/client/tooltip/BCKTooltip.class
+  fr/bck/tetralibs/combat/
+  fr/bck/tetralibs/combat/BCKCombat$Utils.class
+  fr/bck/tetralibs/combat/BCKCombat.class
+  fr/bck/tetralibs/combat/BCKCombatManager.class
+  fr/bck/tetralibs/commands/
+  fr/bck/tetralibs/commands/CommandRegister.class
+  fr/bck/tetralibs/commands/DelHomeCommand.class
+  fr/bck/tetralibs/commands/HomeCommand.class
+  fr/bck/tetralibs/commands/HomesCommand.class
+  fr/bck/tetralibs/commands/RegionCommand.class
+  fr/bck/tetralibs/commands/SetHomeCommand.class
+  fr/bck/tetralibs/commands/SetSpawnCommand.class
+  fr/bck/tetralibs/commands/SpawnCommand.class
+  fr/bck/tetralibs/commands/TetraLibsCommand$Utils.class
+  fr/bck/tetralibs/commands/TetraLibsCommand.class
+  fr/bck/tetralibs/commands/WarpCommand.class
+  fr/bck/tetralibs/commands/WarpsCommand.class
   fr/bck/tetralibs/config/
+  fr/bck/tetralibs/config/ModulesConfig$Utils.class
   fr/bck/tetralibs/config/ModulesConfig.class
   fr/bck/tetralibs/core/
   fr/bck/tetralibs/core/AutoModuleScanner$Holder.class
+  fr/bck/tetralibs/core/AutoModuleScanner$Utils.class
   fr/bck/tetralibs/core/AutoModuleScanner.class
+  fr/bck/tetralibs/core/BCK$Utils.class
+  fr/bck/tetralibs/core/BCK.class
+  fr/bck/tetralibs/core/BCKCore$TITLES_COLORS.class
+  fr/bck/tetralibs/core/BCKCore$ThrowingBiConsumer.class
+  fr/bck/tetralibs/core/BCKCore$ThrowingRunnable.class
+  fr/bck/tetralibs/core/BCKCore$ThrowingSupplier.class
+  fr/bck/tetralibs/core/BCKCore$Utils.class
   fr/bck/tetralibs/core/BCKCore.class
+  fr/bck/tetralibs/core/BCKLog$Utils.class
   fr/bck/tetralibs/core/BCKLog.class
+  fr/bck/tetralibs/core/BCKSuggestionProvider$Utils.class
+  fr/bck/tetralibs/core/BCKSuggestionProvider.class
   fr/bck/tetralibs/core/BCKUtils$BlockUtil.class
   fr/bck/tetralibs/core/BCKUtils$ClientUtil.class
   fr/bck/tetralibs/core/BCKUtils$EffectUtil.class
@@ -167,35 +215,130 @@ Writing Output: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\reobfJar\ou
   fr/bck/tetralibs/core/BCKUtils$GenericUtil.class
   fr/bck/tetralibs/core/BCKUtils$GuiUtil.class
   fr/bck/tetralibs/core/BCKUtils$ItemUtil.class
+  fr/bck/tetralibs/core/BCKUtils$NumberUtil.class
   fr/bck/tetralibs/core/BCKUtils$ServerUtil.class
   fr/bck/tetralibs/core/BCKUtils$TextUtil.class
+  fr/bck/tetralibs/core/BCKUtils$Utils.class
   fr/bck/tetralibs/core/BCKUtils.class
+  fr/bck/tetralibs/core/DataWrapper$Utils.class
   fr/bck/tetralibs/core/DataWrapper.class
+  fr/bck/tetralibs/core/ForbiddenFakePlayerMods$Utils.class
+  fr/bck/tetralibs/core/ForbiddenFakePlayerMods.class
   fr/bck/tetralibs/core/GameModeHandler$ServerAction.class
+  fr/bck/tetralibs/core/GameModeHandler$Utils.class
   fr/bck/tetralibs/core/GameModeHandler.class
+  fr/bck/tetralibs/core/JsonKeyExtractor$Utils.class
   fr/bck/tetralibs/core/JsonKeyExtractor.class
+  fr/bck/tetralibs/core/LichServerHooks$Utils.class
   fr/bck/tetralibs/core/LichServerHooks.class
   fr/bck/tetralibs/core/ModuleManager$1.class
   fr/bck/tetralibs/core/ModuleManager$Hook.class
+  fr/bck/tetralibs/core/ModuleManager$ModuleStatus.class
+  fr/bck/tetralibs/core/ModuleManager$Utils.class
   fr/bck/tetralibs/core/ModuleManager.class
+  fr/bck/tetralibs/core/TetraLibs$Utils.class
+  fr/bck/tetralibs/core/TetraLibs.class
   fr/bck/tetralibs/data/
+  fr/bck/tetralibs/data/BCKServerdata$Utils.class
   fr/bck/tetralibs/data/BCKServerdata.class
+  fr/bck/tetralibs/data/BCKUserdata$Utils.class
   fr/bck/tetralibs/data/BCKUserdata.class
   fr/bck/tetralibs/economy/
+  fr/bck/tetralibs/economy/BCKEconomyManager$Utils.class
   fr/bck/tetralibs/economy/BCKEconomyManager.class
+  fr/bck/tetralibs/handlers/
+  fr/bck/tetralibs/handlers/BCKHomeHandler$1.class
+  fr/bck/tetralibs/handlers/BCKHomeHandler$2.class
+  fr/bck/tetralibs/handlers/BCKHomeHandler$3.class
+  fr/bck/tetralibs/handlers/BCKHomeHandler$4.class
+  fr/bck/tetralibs/handlers/BCKHomeHandler$5.class
+  fr/bck/tetralibs/handlers/BCKHomeHandler.class
+  fr/bck/tetralibs/handlers/BCKSpawnHandler.class
+  fr/bck/tetralibs/handlers/BCKWarpHandler$1.class
+  fr/bck/tetralibs/handlers/BCKWarpHandler$2.class
+  fr/bck/tetralibs/handlers/BCKWarpHandler$3.class
+  fr/bck/tetralibs/handlers/BCKWarpHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsDevHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$1.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$10.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$11.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$12.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$2.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$3.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$4.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$5.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$6.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$7.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$8.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank$9.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Bank.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$1.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$10.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$11.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$12.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$13.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$14.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$15.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$2.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$3.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$4.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$5.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$6.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$7.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$8.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket$9.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler$Pocket.class
+  fr/bck/tetralibs/handlers/TetraLibsEconomyhandler.class
+  fr/bck/tetralibs/handlers/TetraLibsLichWhisperHandler$1.class
+  fr/bck/tetralibs/handlers/TetraLibsLichWhisperHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsMaxEnchantmentHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsModulesHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsPermissionsHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsRandomEnchantmentHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsRandomItemHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsServerdataHandler.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$1.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$2.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$3.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$4.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$5.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler$6.class
+  fr/bck/tetralibs/handlers/TetraLibsUserdataHandler.class
+  fr/bck/tetralibs/home/
+  fr/bck/tetralibs/home/BCKHomeManager$Utils.class
+  fr/bck/tetralibs/home/BCKHomeManager.class
   fr/bck/tetralibs/init/
+  fr/bck/tetralibs/init/BCKSounds.class
+  fr/bck/tetralibs/init/TetraRegistries$Utils.class
   fr/bck/tetralibs/init/TetraRegistries.class
+  fr/bck/tetralibs/level/
+  fr/bck/tetralibs/level/BCKLeveling$Utils.class
+  fr/bck/tetralibs/level/BCKLeveling.class
+  fr/bck/tetralibs/level/BCKLevelingEvent$ExperienceGainEvent.class
+  fr/bck/tetralibs/level/BCKLevelingEvent$LevelUpEvent.class
+  fr/bck/tetralibs/level/BCKLevelingEvent.class
+  fr/bck/tetralibs/level/ExperienceData.class
+  fr/bck/tetralibs/level/ILevelingData.class
+  fr/bck/tetralibs/level/LevelingData.class
+  fr/bck/tetralibs/level/LevelingDataCapability$1.class
+  fr/bck/tetralibs/level/LevelingDataCapability.class
+  fr/bck/tetralibs/level/LevelingDataProvider.class
+  fr/bck/tetralibs/level/LevelingEntity.class
   fr/bck/tetralibs/lich/
+  fr/bck/tetralibs/lich/BCKLichClear$Utils.class
   fr/bck/tetralibs/lich/BCKLichClear.class
+  fr/bck/tetralibs/lich/BCKLichEye$Utils.class
   fr/bck/tetralibs/lich/BCKLichEye.class
+  fr/bck/tetralibs/lich/BCKLichWhisper$Utils.class
   fr/bck/tetralibs/lich/BCKLichWhisper.class
   fr/bck/tetralibs/module/
   fr/bck/tetralibs/module/AutoTetraModule.class
   fr/bck/tetralibs/module/BCKBackpackModule.class
+  fr/bck/tetralibs/module/BCKCombatModule.class
   fr/bck/tetralibs/module/BCKCoreModule.class
   fr/bck/tetralibs/module/BCKEconomyManagerModule.class
   fr/bck/tetralibs/module/BCKHomeModule.class
-  fr/bck/tetralibs/module/BCKLevelModule.class
+  fr/bck/tetralibs/module/BCKLevelingModule.class
   fr/bck/tetralibs/module/BCKLichClearModule.class
   fr/bck/tetralibs/module/BCKLichEyeModule.class
   fr/bck/tetralibs/module/BCKLichWhisperModule.class
@@ -205,10 +348,11 @@ Writing Output: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\reobfJar\ou
   fr/bck/tetralibs/module/BCKServerdataModule.class
   fr/bck/tetralibs/module/BCKSkillModule.class
   fr/bck/tetralibs/module/BCKSpawnModule.class
-  fr/bck/tetralibs/module/BCKTooltipModule.class
   fr/bck/tetralibs/module/BCKUserdataModule.class
+  fr/bck/tetralibs/module/BCKWarpsModule.class
   fr/bck/tetralibs/module/CoreDependentModule.class
   fr/bck/tetralibs/module/ModuleIds.class
+  fr/bck/tetralibs/module/TetraModule$Type.class
   fr/bck/tetralibs/module/TetraModule.class
   fr/bck/tetralibs/modules/
   fr/bck/tetralibs/modules/core/
@@ -224,7 +368,27 @@ Writing Output: C:\Users\DragC\Desktop\Mods\TetraLibs Reforged\build\reobfJar\ou
   fr/bck/tetralibs/modules/lich/BCKLichWhisperEventHandler.class
   fr/bck/tetralibs/modules/permissions/
   fr/bck/tetralibs/modules/permissions/PermEventHandler.class
+  fr/bck/tetralibs/network/
+  fr/bck/tetralibs/network/BCKSoundNetworkHandler.class
+  fr/bck/tetralibs/network/sound/
+  fr/bck/tetralibs/network/sound/PlayLoopingSoundPacket.class
+  fr/bck/tetralibs/network/sound/StopLoopingSoundPacket.class
+  fr/bck/tetralibs/page/
+  fr/bck/tetralibs/page/TetraPage$Utils.class
+  fr/bck/tetralibs/page/TetraPage.class
   fr/bck/tetralibs/permissions/
+  fr/bck/tetralibs/permissions/BCKPermissions$Utils.class
   fr/bck/tetralibs/permissions/BCKPermissions.class
+  fr/bck/tetralibs/recipe/
+  fr/bck/tetralibs/recipe/BCKRecipe.class
+  fr/bck/tetralibs/recipe/BCKRecipeManager$Utils.class
+  fr/bck/tetralibs/recipe/BCKRecipeManager.class
+  fr/bck/tetralibs/spawn/
+  fr/bck/tetralibs/spawn/BCKSpawn$Utils.class
+  fr/bck/tetralibs/spawn/BCKSpawn.class
+  fr/bck/tetralibs/warps/
+  fr/bck/tetralibs/warps/BCKWarpManager$Utils.class
+  fr/bck/tetralibs/warps/BCKWarpManager$Warp.class
+  fr/bck/tetralibs/warps/BCKWarpManager.class
   logo.png
   pack.mcmeta

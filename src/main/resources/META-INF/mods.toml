@@ -1,15 +1,18 @@
 modLoader="javafml"
 loaderVersion="[47,)"
 license="MIT License"
+issueTrackerURL="https://github.com/Blaackknight/TetraLibs-Reforged/issues"
 
 [[mods]]
 modId="tetralibs"
-version="0.0.1"
+version="2.0.02"
 displayName="TetraLibs: Reforged"
 displayURL="https://www.bck-inc.fr/tetralibs"
 logoFile="logo.png"
 credits="0_0"
 authors="DragClover (BCK)"
+updateJSONURL="https://raw.githubusercontent.com/Blaackknight/TetraLibs-Reforged/master/update.json"
+displayTest="IGNORE_SERVER_VERSION"
 
 # Start of user code block mod configuration
 # End of user code block mod configuration

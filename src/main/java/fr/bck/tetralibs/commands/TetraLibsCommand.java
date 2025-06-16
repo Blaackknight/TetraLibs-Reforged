@@ -1,28 +1,7 @@
 package fr.bck.tetralibs.commands;
 
-/*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
- ≡                                                                               ≡
- ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
- ≡ of this software and associated documentation files (the “Software”), to deal ≡
- ≡ in the Software without restriction, including without limitation the rights  ≡
- ≡ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ≡
- ≡ copies of the Software, and to permit persons to whom the Software is         ≡
- ≡ furnished to do so, subject to the following conditions:                      ≡
- ≡                                                                               ≡
- ≡ The above copyright notice and this permission notice shall be included in    ≡
- ≡ all copies or substantial portions of the Software.                           ≡
- ≡                                                                               ≡
- ≡ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ≡
- ≡ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ≡
- ≡ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ≡
- ≡ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ≡
- ≡ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ≡
- ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
- ≡ SOFTWARE.                                                                     ≡
- ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -50,6 +29,31 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.Collection;
+import java.util.Objects;
+
+
+
+/*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
+ ≡                                                                               ≡
+ ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
+ ≡ of this software and associated documentation files (the “Software”), to deal ≡
+ ≡ in the Software without restriction, including without limitation the rights  ≡
+ ≡ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ≡
+ ≡ copies of the Software, and to permit persons to whom the Software is         ≡
+ ≡ furnished to do so, subject to the following conditions:                      ≡
+ ≡                                                                               ≡
+ ≡ The above copyright notice and this permission notice shall be included in    ≡
+ ≡ all copies or substantial portions of the Software.                           ≡
+ ≡                                                                               ≡
+ ≡ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ≡
+ ≡ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ≡
+ ≡ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ≡
+ ≡ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ≡
+ ≡ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ≡
+ ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
+ ≡ SOFTWARE.                                                                     ≡
+ ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
 public class TetraLibsCommand {
     public static final class Utils {
@@ -87,6 +91,16 @@ public class TetraLibsCommand {
                 // Si aucun numéro de page n'est spécifié, afficher la page 1 par défaut
                 .executes(context -> {
                     TetraLibsDevHandler.execute(context.getSource().getEntity());
+                    return 0;
+                })).then(Commands.literal("play")
+                // Si aucun numéro de page n'est spécifié, afficher la page 1 par défaut
+                .executes(context -> {
+                    TetraLibsDevHandler.play(Objects.requireNonNull(context.getSource().getEntity()));
+                    return 0;
+                })).then(Commands.literal("stop")
+                // Si aucun numéro de page n'est spécifié, afficher la page 1 par défaut
+                .executes(context -> {
+                    TetraLibsDevHandler.stop(Objects.requireNonNull(context.getSource().getEntity()));
                     return 0;
                 })).then(Commands.literal("modules").then(Commands.literal("reload").executes(arguments -> {
             Level world = arguments.getSource().getUnsidedLevel();
@@ -158,6 +172,34 @@ public class TetraLibsCommand {
 
             Entity finalEntity = entity;
             BCKCore.doRiskyOperation(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), "Fatal when applying random enchantment -> ", () -> TetraLibsRandomEnchantmentHandler.execute(finalEntity));
+            return 0;
+        })).then(Commands.literal("maxenchantment").then(Commands.argument("verif", BoolArgumentType.bool()).executes(arguments -> {
+            Level world = arguments.getSource().getUnsidedLevel();
+            double x = arguments.getSource().getPosition().x();
+            double y = arguments.getSource().getPosition().y();
+            double z = arguments.getSource().getPosition().z();
+            Entity entity = arguments.getSource().getEntity();
+            if (entity == null && world instanceof ServerLevel _servLevel)
+                entity = FakePlayerFactory.getMinecraft(_servLevel);
+            Direction direction = Direction.DOWN;
+            if (entity != null) direction = entity.getDirection();
+
+            Entity finalEntity = entity;
+            BCKCore.doRiskyOperation(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), "Fatal when applying max enchantment -> ", () -> TetraLibsMaxEnchantmentHandler.apply(arguments, finalEntity));
+            return 1;
+        })).executes(arguments -> {
+            Level world = arguments.getSource().getUnsidedLevel();
+            double x = arguments.getSource().getPosition().x();
+            double y = arguments.getSource().getPosition().y();
+            double z = arguments.getSource().getPosition().z();
+            Entity entity = arguments.getSource().getEntity();
+            if (entity == null && world instanceof ServerLevel _servLevel)
+                entity = FakePlayerFactory.getMinecraft(_servLevel);
+            Direction direction = Direction.DOWN;
+            if (entity != null) direction = entity.getDirection();
+
+            Entity finalEntity = entity;
+            BCKCore.doRiskyOperation(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), "Fatal when applying max enchantment -> ", () -> TetraLibsMaxEnchantmentHandler.apply(finalEntity));
             return 0;
         }));
 
@@ -501,7 +543,6 @@ public class TetraLibsCommand {
             })))));
             BCKLog.debug(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), BCKCore.TITLES_COLORS.title(BCKPermissions.class) + " §earguments §aloaded§7.");
         }
-
         dispatcher.register(root);
     }
 }

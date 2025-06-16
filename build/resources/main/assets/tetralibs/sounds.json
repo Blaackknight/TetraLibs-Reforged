@@ -1,0 +1,13 @@
+{
+  "mii": {
+    "category": "players",
+    "sounds": [
+      {
+        "name": "tetralibs:mii",
+        "stream": false,
+        "volume": 1.0,
+        "pitch": 1.0
+      }
+    ]
+  }
+}

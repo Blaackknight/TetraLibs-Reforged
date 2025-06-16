@@ -1,8 +1,24 @@
 package fr.bck.tetralibs.page;
 
 
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKLog;
+import fr.bck.tetralibs.core.DataWrapper;
+import fr.bck.tetralibs.data.BCKUserdata;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,21 +38,6 @@ package fr.bck.tetralibs.page;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-
-import fr.bck.tetralibs.core.BCKCore;
-import fr.bck.tetralibs.core.BCKLog;
-import fr.bck.tetralibs.core.DataWrapper;
-import fr.bck.tetralibs.data.BCKUserdata;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.world.entity.Entity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Cette classe gère la pagination et l'affichage du texte à travers des pages pour le mod TetraLibs.

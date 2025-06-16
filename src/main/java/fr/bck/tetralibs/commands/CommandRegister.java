@@ -1,8 +1,21 @@
 package fr.bck.tetralibs.commands;
 
 
+import com.mojang.brigadier.CommandDispatcher;
+import fr.bck.tetralibs.config.ModulesConfig;
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKLog;
+import fr.bck.tetralibs.home.BCKHomeManager;
+import fr.bck.tetralibs.module.ModuleIds;
+import fr.bck.tetralibs.spawn.BCKSpawn;
+import fr.bck.tetralibs.warps.BCKWarpManager;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceLocation;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,17 +35,6 @@ package fr.bck.tetralibs.commands;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import com.mojang.brigadier.CommandDispatcher;
-import fr.bck.tetralibs.config.ModulesConfig;
-import fr.bck.tetralibs.core.BCKCore;
-import fr.bck.tetralibs.core.BCKLog;
-import fr.bck.tetralibs.home.BCKHomeManager;
-import fr.bck.tetralibs.module.ModuleIds;
-import fr.bck.tetralibs.spawn.BCKSpawn;
-import fr.bck.tetralibs.warps.BCKWarpManager;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Centralise l'enregistrement de toutes les commandes,

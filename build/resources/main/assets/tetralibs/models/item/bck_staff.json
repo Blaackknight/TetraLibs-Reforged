@@ -1,0 +1,7 @@
+{
+  "parent": "tetralibs:custom/bck_staff",
+  "textures": {
+    "0": "tetralibs:block/bck_staff",
+    "particle": "minecraft:item/barrier"
+  }
+}

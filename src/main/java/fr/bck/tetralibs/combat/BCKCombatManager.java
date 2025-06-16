@@ -1,8 +1,18 @@
 package fr.bck.tetralibs.combat;
 
 
+import fr.bck.tetralibs.TetralibsMod;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.fml.common.Mod;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,14 +32,6 @@ package fr.bck.tetralibs.combat;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import fr.bck.tetralibs.TetralibsMod;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.fml.common.Mod;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = TetralibsMod.MODID)
 public class BCKCombatManager {

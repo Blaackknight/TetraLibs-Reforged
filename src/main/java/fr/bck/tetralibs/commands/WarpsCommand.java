@@ -1,8 +1,24 @@
 package fr.bck.tetralibs.commands;
 
 
+import com.mojang.brigadier.CommandDispatcher;
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKSuggestionProvider;
+import fr.bck.tetralibs.handlers.BCKWarpHandler;
+import fr.bck.tetralibs.warps.BCKWarpManager;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.MessageArgument;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.FakePlayerFactory;
+
+
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
- ≡              Copyright BCK, Inc 2025. (DragClover / Blackknight)              ≡
+ ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
  ≡ Permission is hereby granted, free of charge, to any person obtaining a copy  ≡
  ≡ of this software and associated documentation files (the “Software”), to deal ≡
@@ -22,20 +38,6 @@ package fr.bck.tetralibs.commands;
  ≡ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE ≡
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
-
-import com.mojang.brigadier.CommandDispatcher;
-import fr.bck.tetralibs.core.BCKCore;
-import fr.bck.tetralibs.core.BCKSuggestionProvider;
-import fr.bck.tetralibs.handlers.BCKWarpHandler;
-import fr.bck.tetralibs.warps.BCKWarpManager;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.MessageArgument;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.FakePlayerFactory;
 
 public class WarpsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
