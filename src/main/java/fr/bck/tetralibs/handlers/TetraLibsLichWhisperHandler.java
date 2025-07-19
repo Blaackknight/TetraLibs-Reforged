@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -48,12 +49,12 @@ public class TetraLibsLichWhisperHandler {
             }
         }.convert(StringArgumentType.getString(arguments, "level")), false);
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.lich_whisper.success").getString()).replace("<level>", StringArgumentType.getString(arguments, "level")))), false);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.lich_whisper.success", Component.literal(StringArgumentType.getString(arguments, "level")))), false);
     }
 
     public static void get(Entity entity) {
         if (entity == null) return;
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.lich_whisper.get").getString()).replace("<level>", "" + BCKLichWhisper.getLogLevel((ServerPlayer) entity)))), false);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.lich_whisper.get", Component.literal(String.valueOf(BCKLichWhisper.getLogLevel((ServerPlayer) entity))))), false);
     }
 }

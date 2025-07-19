@@ -21,6 +21,7 @@ import java.util.UUID;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -81,7 +82,7 @@ public final class BCKLichGuardModule extends CoreDependentModule {
         event.setCanceled(true);
 
         // Message
-        event.getPlayer().displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("tetra_libs.events.lich_guard.protected").getString()), true);
+        event.getPlayer().displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("tetra_libs.events.lich_guard.protected")), true);
 
         // Particules + son (cool-down)
         if (event.getPlayer() instanceof ServerPlayer sp && shouldNotify(sp)) {
@@ -107,7 +108,7 @@ public final class BCKLichGuardModule extends CoreDependentModule {
         event.setCanceled(true);
 
         // Message
-        _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("tetra_libs.events.lich_guard.protected").getString()), true);
+        _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("tetra_libs.events.lich_guard.protected")), true);
 
         // Particules + son (cool-down)
         if (event.getEntity() instanceof ServerPlayer sp && shouldNotify(sp)) {

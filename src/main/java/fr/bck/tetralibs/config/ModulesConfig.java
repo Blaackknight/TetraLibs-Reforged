@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -81,6 +82,7 @@ public final class ModulesConfig {
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_ECONOMY_MANAGER;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_WARPS;
     public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_COMBAT;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_BCK_VANISH;
 
     // Valeurs par défaut (avant modification utilisateur)
     private static final Map<String, Boolean> DEFAULTS = new HashMap<>();
@@ -124,6 +126,7 @@ public final class ModulesConfig {
         boolean defEconomyManager = true;
         boolean defWarps = false;
         boolean defCombat = false;
+        boolean defVanish = false;
 
         // On définit les BooleanValue avec ces valeurs et on alimente DEFAULTS
         ENABLE_BCK_CORE = BUILDER.define("bck_core", defCore);
@@ -177,6 +180,9 @@ public final class ModulesConfig {
         ENABLE_BCK_COMBAT = BUILDER.define("bck_combat", defCombat);
         DEFAULTS.put("bck_combat", defCombat);
 
+        ENABLE_BCK_VANISH = BUILDER.define("bck_vanish", defVanish);
+        DEFAULTS.put("bck_vanish", defVanish);
+
         for (AutoModuleScanner.Holder holder : AutoModuleScanner.find()) {
             try {
                 // on récupère l'ID directement depuis l'instance
@@ -198,6 +204,7 @@ public final class ModulesConfig {
     // Gestion dynamique pour modules tiers
     private static final String SECTION = "modules";
     private static CommentedConfig tomlSection;
+    private static CommentedFileConfig ROOT_CFG;
     private static final Map<String, Boolean> cache = new HashMap<>();
 
     /**
@@ -224,6 +231,7 @@ public final class ModulesConfig {
             case "bck_economy_manager" -> ENABLE_BCK_ECONOMY_MANAGER.get();
             case "bck_warps" -> ENABLE_BCK_WARPS.get();
             case "bck_combat" -> ENABLE_BCK_COMBAT.get();
+            case "bck_vanish" -> ENABLE_BCK_VANISH.get();
             default -> readOrCreateDynamic(key, false);
         };
     }
@@ -270,14 +278,38 @@ public final class ModulesConfig {
         return cache.get(key);
     }
 
+    private static CommentedFileConfig ROOT_FILE;   // ↩ à mémoriser !
+
     private static void loadSectionIfNeeded() {
         if (tomlSection != null) return;
         Path path = configFilePath != null ? configFilePath : FMLPaths.CONFIGDIR.get().resolve("tetralibs-server.toml");
-        CommentedFileConfig full = CommentedFileConfig.builder(path).autosave().sync().build();
-        full.load();
-        if (!full.contains(SECTION)) full.add(SECTION, full.configFormat().createConfig());
-        tomlSection = full.get(SECTION);
+        ROOT_FILE = CommentedFileConfig.builder(path).autosave().sync().preserveInsertionOrder().build();
+        ROOT_FILE.load();
+        if (!ROOT_FILE.contains(SECTION)) ROOT_FILE.add(SECTION, ROOT_FILE.configFormat().createConfig());
+        tomlSection = ROOT_FILE.get(SECTION);
         tomlSection.valueMap().forEach((k, v) -> cache.put(String.valueOf(k), Boolean.parseBoolean(String.valueOf(v))));
+    }
+
+    /*──────────────────── setters + persistance ───────────────────*/
+
+    /**
+     * Change l’état d’un module côté serveur.
+     *
+     * @param id    namespace:path du module
+     * @param value true = activé, false = désactivé
+     */
+    public static void setEnabled(ResourceLocation id, boolean value) {
+        String key = id.getPath();
+        loadSectionIfNeeded();          // tu es sûr que tomlSection ≠ null
+        cache.put(key, value);
+        tomlSection.set(key, value);    // autosave() suffit si tu as gardé le fichier
+    }
+
+    /**
+     * Force l’écriture du fichier tetralibs-server.toml.
+     */
+    public static void save() {
+        if (ROOT_FILE != null) ROOT_FILE.save();   // autosave règle 95 % des cas ; ceci force 100 %
     }
 
     private ModulesConfig() {

@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -41,10 +42,10 @@ public class TetraLibsPermissionsHandler {
         if (entity == null) return;
         if (BCKPermissions.getServerPermissions().length >= 1) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.permissions").getString()).replace("<perms>", BCKPermissions.getFormattedServerPermissions("\u00A77- \u00A78%perm%\u00A7r%nl%", "%perm%")))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions", Component.literal(BCKPermissions.getFormattedServerPermissions("\u00A77- \u00A78%perm%\u00A7r%nl%", "%perm%")))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.tetralibs.permissions.empty").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions.empty")), false);
         }
     }
 
@@ -54,10 +55,10 @@ public class TetraLibsPermissionsHandler {
             for (Entity entityiterator : EntityArgument.getEntities(arguments, "players")) {
                 if (BCKPermissions.getEntityPermissions(entityiterator).length >= 1) {
                     if (entity instanceof Player _player && !_player.level().isClientSide())
-                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.permissions.player.list").getString()).replace("<perms>", new BCKPermissions().getFormattedPlayerPermissions(entityiterator, "\u00A77- \u00A7d%perm%\u00A7r%nl%", "%perm%"))).replace("<player>", entityiterator.getName().getString()))), false);
+                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions.player.list", Component.literal(new BCKPermissions().getFormattedPlayerPermissions(entityiterator, "\u00A77- \u00A7d%perm%\u00A7r%nl%", "%perm%")), Component.literal(entityiterator.getName().getString()))), false);
                 } else {
                     if (entity instanceof Player _player && !_player.level().isClientSide())
-                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.permissions.player.list.empty").getString()).replace("<player>", entityiterator.getName().getString()))), false);
+                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions.player.list.empty", Component.literal(entityiterator.getName().getString()))), false);
                 }
             }
         } catch (CommandSyntaxException e) {
@@ -71,7 +72,7 @@ public class TetraLibsPermissionsHandler {
             for (Entity entityiterator : EntityArgument.getEntities(arguments, "players")) {
                 BCKPermissions.addPermission(entityiterator, (StringArgumentType.getString(arguments, "permission")), false);
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.permissions.player.add.success").getString()).replace("<player>", entityiterator.getName().getString())).replace("<perm>", StringArgumentType.getString(arguments, "permission")))), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions.player.add.success", Component.literal(entityiterator.getName().getString()), Component.literal(StringArgumentType.getString(arguments, "permission")))), false);
             }
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
@@ -84,7 +85,7 @@ public class TetraLibsPermissionsHandler {
             for (Entity entityiterator : EntityArgument.getEntities(arguments, "players")) {
                 BCKPermissions.removePermission(entityiterator, (StringArgumentType.getString(arguments, "permission")), false);
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.permissions.player.remove.success").getString()).replace("<player>", entityiterator.getName().getString())).replace("<perm>", StringArgumentType.getString(arguments, "permission")))), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.permissions.player.remove.success", Component.literal(entityiterator.getName().getString()), Component.literal(StringArgumentType.getString(arguments, "permission")))), false);
             }
         } catch (CommandSyntaxException e) {
             e.printStackTrace();

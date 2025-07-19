@@ -17,6 +17,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -43,7 +44,7 @@ public class TetraLibsServerdataHandler {
     public static void get(CommandContext<CommandSourceStack> arguments, Entity entity) {
         if (entity == null) return;
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.serverdata.get").getString()).replace("<key>", StringArgumentType.getString(arguments, "key"))).replace("<value>", ((DataWrapper) BCKServerdata.data((StringArgumentType.getString(arguments, "key")))).toString()))), false);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.serverdata.get", Component.literal(StringArgumentType.getString(arguments, "key")), Component.literal(((DataWrapper) BCKServerdata.data((StringArgumentType.getString(arguments, "key")))).toString()))), false);
 
     }
 
@@ -77,7 +78,7 @@ public class TetraLibsServerdataHandler {
 
         // Message de confirmation
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.serverdata.set").getString()).replace("<key>", key)).replace("<value>", rawValue)), false);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.serverdata.set", Component.literal(key), Component.literal(rawValue))), false);
     }
 
     public static void list(Entity entity) {

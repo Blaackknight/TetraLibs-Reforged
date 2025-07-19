@@ -22,6 +22,7 @@ import static fr.bck.tetralibs.combat.BCKCombatManager.getCooldowns;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -92,28 +93,27 @@ public class BCKCombatModule extends CoreDependentModule {
     }
 
     @Override
-    public void onServerTick(TickEvent.ServerTickEvent event) {
-        super.onServerTick(event);
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        super.onPlayerTick(event);
         if (event.phase != TickEvent.Phase.END) return;
 
         Iterator<Map.Entry<UUID, Double>> it = getCooldowns().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<UUID, Double> entry = it.next();
             double secLeft = entry.getValue() - (1.0 / 20.0);
-            UUID playerId = entry.getKey();
-            ServerPlayer player = event.getServer().getPlayerList().getPlayer(playerId);
-            if (secLeft <= 0 || player == null) {
-                // fin de combat
-                if (player != null) BCKCombat.exit(player);
-                it.remove();
-            } else {
-                // mise à jour
-                entry.setValue(secLeft);
-                BCKCombat.setPlayerCombatCooldown(player, secLeft);
-                // envoi dans l'action bar via la clé translatable avec argument
-                String timeStr = String.format("%.1f", secLeft);
-                Component msg = Component.translatable("bck_combat.in_combat", timeStr);
-                player.displayClientMessage(msg, true);
+            if (event.player instanceof ServerPlayer player) {
+                if (secLeft <= 0) {
+                    BCKCombat.exit(player);
+                    it.remove();
+                } else {
+                    // mise à jour
+                    entry.setValue(secLeft);
+                    BCKCombat.setPlayerCombatCooldown(player, secLeft);
+                    // envoi dans l'action bar via la clé translatable avec argument
+                    String timeStr = String.format("%.1f", secLeft);
+                    Component msg = Component.translatable("bck_combat.in_combat", timeStr);
+                    player.displayClientMessage(msg, true);
+                }
             }
         }
     }

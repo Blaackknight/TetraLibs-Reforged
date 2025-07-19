@@ -6,7 +6,8 @@ import fr.bck.tetralibs.init.BCKItems;
 import fr.bck.tetralibs.init.BCKSounds;
 import fr.bck.tetralibs.init.BCKTabs;
 import fr.bck.tetralibs.init.TetraRegistries;
-import fr.bck.tetralibs.network.BCKSoundNetworkHandler;
+import fr.bck.tetralibs.network.*;
+import fr.bck.tetralibs.player.S2COpenCategoriesGui;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 
 
 
@@ -98,14 +100,34 @@ public class TetralibsMod {
 
     private void setupCommon(FMLCommonSetupEvent evt) {
         // sound_control
+        evt.enqueueWork(() -> {
+            addNetworkMessage(C2SApplyModulesPacket.class, C2SApplyModulesPacket::encode, C2SApplyModulesPacket::decode, C2SApplyModulesPacket::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+            addNetworkMessage(C2SRequestCategoriesGui.class, C2SRequestCategoriesGui::encode, C2SRequestCategoriesGui::decode, C2SRequestCategoriesGui::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+            addNetworkMessage(S2COpenCategoriesGui.class, S2COpenCategoriesGui::encode, S2COpenCategoriesGui::decode, S2COpenCategoriesGui::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+            // --------------- S2C commun  (UNE SEULE FOIS) ---------------
+            addNetworkMessage(InitCategoriesMessage.class, InitCategoriesMessage::toBytes, InitCategoriesMessage::new, InitCategoriesMessage::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
+            addNetworkMessage(C2SValidateGateKey.class, C2SValidateGateKey::encode, C2SValidateGateKey::decode, C2SValidateGateKey::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+            addNetworkMessage(S2CInvalidGate.class, S2CInvalidGate::encode, S2CInvalidGate::decode, S2CInvalidGate::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        });
         evt.enqueueWork(BCKSoundNetworkHandler::registerCommon);
     }
 
     private void setupClient(FMLClientSetupEvent evt) {
         evt.enqueueWork(() -> {
-            // Enregistrement des packets sonores uniquement côté client
-            //BCKSoundsPackets.register(evt);
+            addNetworkMessage(S2CGateUnlocked.class, S2CGateUnlocked::encode, S2CGateUnlocked::decode, S2CGateUnlocked::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+            // Packet **client-only** : on ne l’enregistre
+            // QUE sur la JVM client, jamais côté serveur.
+            //addNetworkMessage(S2COpenCategoriesGui.class, S2COpenCategoriesGui::encode, S2COpenCategoriesGui::decode, S2COpenCategoriesGui::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         });
+    }
+
+    public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
+        PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
+        messageID++;
     }
 
     // End of user code block mod methods

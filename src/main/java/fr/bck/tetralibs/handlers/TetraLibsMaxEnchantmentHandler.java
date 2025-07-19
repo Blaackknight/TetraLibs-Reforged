@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -42,27 +43,27 @@ public class TetraLibsMaxEnchantmentHandler {
         ItemStack i = BCKUtils.EntityUtil.getMainHandItem(entity);
         if (i == ItemStack.EMPTY) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.max_enchantment.wrong").getString()))), true);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.max_enchantment.wrong")), true);
             return;
         }
         BCKUtils.EnchantmentUtil.applyMaxEnchantments(i, verif);
         BCKUtils.EntityUtil.playSound(entity, SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("minecraft", "block.anvil.place")), 10, 2);
 
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.max_enchantment.success").getString()).replace("<item>", i.getDisplayName().getString()))), true);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.max_enchantment.success", Component.literal(i.getDisplayName().getString()))), true);
     }
 
     public static void apply(Entity entity) {
         ItemStack i = BCKUtils.EntityUtil.getMainHandItem(entity);
         if (i == ItemStack.EMPTY) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.max_enchantment.wrong").getString()))), true);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.max_enchantment.wrong")), true);
             return;
         }
         BCKUtils.EnchantmentUtil.applyMaxEnchantments(i);
         BCKUtils.EntityUtil.playSound(entity, SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("minecraft", "block.anvil.place")), 10, 2);
 
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.max_enchantment.success").getString()).replace("<item>", i.getDisplayName().getString()))), true);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.max_enchantment.success", Component.literal(i.getDisplayName().getString()))), true);
     }
 }

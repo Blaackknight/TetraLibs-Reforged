@@ -1,14 +1,21 @@
 package fr.bck.tetralibs.handlers;
 
 
+import fr.bck.tetralibs.commands.TetraLibsCommand;
+import fr.bck.tetralibs.core.BCKCore;
+import fr.bck.tetralibs.core.BCKLog;
 import fr.bck.tetralibs.core.BCKUtils;
 import fr.bck.tetralibs.init.BCKSounds;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+
+import static fr.bck.tetralibs.core.BCKUtils.ConfigsUtils.dumpServerConfig;
+
 
 
 
@@ -49,5 +56,17 @@ public class TetraLibsDevHandler {
 
     public static void stop(Entity entity) {
         BCKUtils.EntityUtil.stopSoundTrackingEntityAndSelf(entity, BCKSounds.MII.get().getLocation());
+    }
+
+    public static void text(Entity entity) {
+        dumpServerConfig().forEach((k, v) -> BCKLog.debug(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), k + " -> " + v));
+        if (entity instanceof Player _player && !_player.level().isClientSide())
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_combat.in_combat", Component.literal("20"))), false);
+        if (entity instanceof Player _player && !_player.level().isClientSide())
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_combat.in_combat").getString().replace("%1$s", "100")), false);
+        if (entity instanceof Player _player && !_player.level().isClientSide())
+            _player.displayClientMessage(Component.translatable("bck_combat.in_combat", Component.literal(String.valueOf(50))), false);
+        if (entity instanceof Player _player && !_player.level().isClientSide())
+            _player.displayClientMessage(Component.translatable("bck_combat.in_combat", Component.literal(String.valueOf(50)).withStyle(ChatFormatting.DARK_GREEN)), false);
     }
 }

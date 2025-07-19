@@ -16,6 +16,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -52,12 +53,12 @@ public class BCKLichGuardHandler {
             }
             if (!lich.territoryByName(name).isEmpty()) {
                 if (!_pl.level().isClientSide())
-                    _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.lich_guard.create.already_exist").getString()))), true);
+                    _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.lich_guard.create.already_exist")), true);
             }
 
             lich.createTerritory(name, _pl, p1, p2);
             if (!_pl.level().isClientSide())
-                _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.lich_guard.create.success").getString()))), true);
+                _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.lich_guard.create.success")), true);
             arguments.getSource().sendSuccess(() -> Component.literal("§aTerritoire §e" + name + " §acréé."), false);
         }
     }
@@ -70,7 +71,7 @@ public class BCKLichGuardHandler {
             BCKLichGuard.Territory terr = lich.territoryByName(name);
             if (terr.isEmpty()) {
                 if (!_pl.level().isClientSide())
-                    _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.lich_guard.create.already_exist").getString()))), true);
+                    _pl.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.lich_guard.create.already_exist")), true);
             }
         }
     }

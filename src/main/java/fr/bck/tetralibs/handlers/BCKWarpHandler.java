@@ -15,6 +15,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -52,20 +53,20 @@ public class BCKWarpHandler {
 
         if (!BCKPermissions.hasPermission(entity, "warps.use")) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("permissions.no_permission").getString()).replace("<perm>", "warps.use"))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("warps.use"))), false);
         } else if ((name).isEmpty()) {
             Player _player = (Player) entity;
             if (!_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.warp.unknown_name").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.unknown_name")), false);
         } else if (!BCKWarpManager.listWarps().contains(name)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warp.not_exist").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.not_exist", Component.literal(name))), false);
         } else if (entity instanceof Player _player && BCKWarpManager.teleportToWarp(name, _player)) {
             if (!_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.warp.teleporting").getString()).replace("<name>", name)).replace("<timer>", new java.text.DecimalFormat("##.##").format(BCKWarpManager.teleportDelay())))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.teleporting", Component.literal(name), Component.literal(new java.text.DecimalFormat("##.##").format(BCKWarpManager.teleportDelay())))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warp.teleporting_error").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.teleporting_error", Component.literal(name))), false);
         }
     }
 
@@ -82,13 +83,13 @@ public class BCKWarpHandler {
         }).getMessage();
         if (!BCKPermissions.hasPermission(entity, "warps.create")) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("permissions.no_permission").getString()).replace("<perm>", "warps.create"))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("warps.create"))), false);
         } else if ((name).isEmpty()) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.warps.unknown_name").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.unknown_name")), false);
         } else if (BCKWarpManager.listWarps().contains(name)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warps.already_exist").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.already_exist", Component.literal(name))), false);
         } else {
             if (entity instanceof Player _player) BCKWarpManager.setWarp(name, _player);
         }
@@ -107,19 +108,19 @@ public class BCKWarpHandler {
         }).getMessage();
         if (!BCKPermissions.hasPermission(entity, "warps.remove")) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("permissions.no_permission").getString()).replace("<perm>", "warps.remove"))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("warps.remove"))), false);
         } else if ((name).isEmpty()) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.warps.unknown_name").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.unknown_name")), false);
         } else if (!BCKWarpManager.listWarps().contains(name)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warps.not_exist").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.not_exist", Component.literal(name))), false);
         } else if (BCKWarpManager.removeWarp(name)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warps.removed_successfully").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.removed_successfully", Component.literal(name))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.warps.removing_error").getString()).replace("<name>", name))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.removing_error", Component.literal(name))), false);
         }
     }
 
@@ -128,10 +129,10 @@ public class BCKWarpHandler {
         String[] list = BCKWarpManager.listWarpsArray();
         if (!BCKPermissions.hasPermission(entity, "warps.view")) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("permissions.no_permission").getString().replace("<perm>", "warps.view"))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("warps.view"))), false);
         } else if (list.length < 1) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.warps.list.empty").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.list.empty")), false);
         }
     }
 }

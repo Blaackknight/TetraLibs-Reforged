@@ -1,6 +1,7 @@
 package fr.bck.tetralibs.module;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.server.ServerStoppingEvent;
 
 import java.util.Collections;
 import java.util.Set;
+
 
 
 
@@ -199,7 +201,7 @@ public interface TetraModule {
      *
      * @param event Quand un item expire.
      */
-    default void onItemExpire(ItemExpireEvent event){
+    default void onItemExpire(ItemExpireEvent event) {
     }
 
     /**
@@ -288,6 +290,14 @@ public interface TetraModule {
      * @param event Rendu des items tooltips.
      */
     default void onTooltipRender(ItemTooltipEvent event) {
+    }
+
+    /**
+     * ──────── <b>Hook Client</b> ────────
+     *
+     * @param event Chat client.
+     */
+    default void onClientChat(ClientChatReceivedEvent event) {
     }
 
     /*────────── Dépendances entre modules Tetra ──────────*/

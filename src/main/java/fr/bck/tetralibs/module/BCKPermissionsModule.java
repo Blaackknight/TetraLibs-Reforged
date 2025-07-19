@@ -35,6 +35,7 @@ import java.util.Set;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -132,6 +133,8 @@ public final class BCKPermissionsModule extends CoreDependentModule {
         BCKPermissions.addServerPermission("region.claim", true);
         BCKPermissions.addServerPermission("region.build", true);
         BCKPermissions.addServerPermission("region.admin", true);
+        BCKPermissions.addServerPermission("vanish.use", true);
+        BCKPermissions.addServerPermission("bck_management.open", true);
 
         MinecraftServer server = event.getServer();
         CommandDispatcher<CommandSourceStack> dispatcher = server.getCommands().getDispatcher();
@@ -159,7 +162,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                 event.setResult(Event.Result.DENY);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "block.place")), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("block.place"))), false);
         }
     }
 
@@ -175,7 +178,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                 event.setResult(Event.Result.DENY);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "block.break")), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("block.break"))), false);
         }
     }
 
@@ -191,7 +194,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                 event.setResult(Event.Result.DENY);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "item.drop")), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("item.drop"))), false);
         }
     }
 
@@ -221,7 +224,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                 event.setResult(Event.Result.DENY);
             }
             if (!entity.level().isClientSide())
-                entity.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "player.send_message")), false);
+                entity.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("player.send_message"))), false);
         }
     }
 
@@ -257,7 +260,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                 if (entity instanceof Player _player) _player.closeContainer();
             });
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "player.interact")), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("player.interact"))), false);
         }
     }
 
@@ -281,7 +284,7 @@ public final class BCKPermissionsModule extends CoreDependentModule {
                     event.setResult(Event.Result.DENY);
                 }
                 if (sourceentity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", "player.attack")), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("player.attack"))), false);
             }
         }
     }
@@ -305,10 +308,10 @@ public final class BCKPermissionsModule extends CoreDependentModule {
             if (event.isCancelable()) {
                 event.setCanceled(true);
                 if (ModulesConfig.isEnabled(ModuleIds.BCK_LICH_WHISPER))
-                    BCKLichWhisper.send(BCKUtils.TextUtil.toStyled((Component.translatable("lich_whisper.on_try_command").getString().replace("<player>", BCKUtils.TextUtil.universal(player, sender))).replace("<cmd>", command)), 4);
+                    BCKLichWhisper.send(BCKUtils.TextUtil.toStyled((Component.translatable("lich_whisper.on_try_command", Component.literal(BCKUtils.TextUtil.universal(player, sender)), Component.literal(command)))), 4);
             }
             if (sender instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission").getString().replace("<perm>", converted)), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal(converted))), false);
         }
     }
 }

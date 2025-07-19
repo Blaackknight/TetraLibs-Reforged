@@ -29,6 +29,7 @@ import java.util.Set;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -162,11 +163,8 @@ public class BCKWarpManager {
         warps.put(name, w);
         saveWarps();
         // Envoie un message de succès de création de warp, avec détails
-        String template = Component.translatable("command.warps.created_successfully").getString();
-        String temp = Component.translatable("command.warps.created_successfully.more").getString();
-        temp = temp.replace("<x>", String.valueOf(w.x)).replace("<y>", String.valueOf(w.y)).replace("<z>", String.valueOf(w.z)).replace("<yaw>", String.valueOf(w.yaw)).replace("<pitch>", String.valueOf(w.pitch)).replace("<dimension>", w.dimension);
-        String message = template.replace("<name>", name).replace("<more>", BCKUtils.TextUtil.toStyled(temp).getString());
-        player.displayClientMessage(BCKUtils.TextUtil.toStyled(message), false);
+        Component template = Component.translatable("command.warps.created_successfully", Component.literal(name), BCKUtils.TextUtil.toStyled(Component.translatable("command.warps.created_successfully.more")), Component.literal(String.valueOf(w.x)), Component.literal(String.valueOf(w.y)), Component.literal(String.valueOf(w.z)), Component.literal(String.valueOf(w.yaw)), Component.literal(String.valueOf(w.pitch)), Component.literal(w.dimension));
+        player.displayClientMessage(BCKUtils.TextUtil.toStyled(template), false);
     }
 
     public static void setWarp(String name, double x, double y, double z, float yrot, float xrot, ResourceKey key, boolean callback) {
@@ -254,7 +252,7 @@ public class BCKWarpManager {
             player.teleportTo(w.x, w.y, w.z);
             player.setYRot(w.yaw);
             player.setXRot(w.pitch);
-            player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.teleport_successfully").getString().replace("<name>", name)), false);
+            player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.teleport_successfully", Component.literal(name))), false);
         };
         if (delay > 0) {
             Thread t = new Thread(() -> {
@@ -265,7 +263,7 @@ public class BCKWarpManager {
                 if (Math.abs(player.getX() - startX) < 0.1 && Math.abs(player.getY() - startY) < 0.1 && Math.abs(player.getZ() - startZ) < 0.1) {
                     action.run();
                 } else {
-                    player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.cancelled").getString()), false);
+                    player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.warp.cancelled")), false);
                 }
             });
             t.setDaemon(true);

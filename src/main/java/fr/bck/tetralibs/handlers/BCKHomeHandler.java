@@ -18,6 +18,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -46,18 +47,18 @@ public class BCKHomeHandler {
         String home = StringArgumentType.getString(arguments, "name");
         if ((home).isEmpty()) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.sethome.empty").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.sethome.empty"))), false);
         } else if (BCKHomeManager.has(entity, home)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.sethome.already").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.sethome.already"))), false);
         } else if (BCKHomeManager.count(entity) < ((DataWrapper) BCKServerdata.data("homes.max_count")).getInt()) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
                 BCKHomeManager.setHome(_player, (StringArgumentType.getString(arguments, "name")), _player.level().dimension().location().toString(), x, y, z, (entity.getXRot()), (entity.getYRot()));
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((((((((Component.translatable("command.sethome.success").getString()).replace("<name>", StringArgumentType.getString(arguments, "name"))).replace("<player>", entity.getName().getString())).replace("<z>", "" + z)).replace("<y>", "" + y)).replace("<x>", "" + x)).replace("<world>", entity.level().dimension().location().toString())).replace("<pitch>", "" + entity.getXRot())).replace("<yaw>", "" + entity.getYRot()))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.sethome.success", Component.literal(StringArgumentType.getString(arguments, "name")), Component.literal(entity.getName().getString()), Component.literal(String.valueOf(z)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(x)), Component.literal(entity.level().dimension().location().toString()), Component.literal(String.valueOf(entity.getXRot())), Component.literal(String.valueOf(entity.getYRot())))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.sethome.max").getString()).replace("<count>", "" + ((DataWrapper) BCKServerdata.data("homes.max_count")).getInt()))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.sethome.max", Component.literal(String.valueOf(((DataWrapper) BCKServerdata.data("homes.max_count")).getInt())))), false);
         }
     }
 
@@ -66,12 +67,12 @@ public class BCKHomeHandler {
         String home = StringArgumentType.getString(arguments, "name");
         if (!BCKHomeManager.has(entity, home)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.delhome.unknown").getString()).replace("<name>", home))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.delhome.unknown", Component.literal(home))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
                 BCKHomeManager.delHome(_player, home);
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.delhome.success").getString()).replace("<name>", home))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.delhome.success", Component.literal(home))), false);
         }
     }
 
@@ -80,7 +81,7 @@ public class BCKHomeHandler {
         String home = StringArgumentType.getString(arguments, "name");
         if (!BCKHomeManager.has(entity, home)) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.home.unknown").getString()).replace("<name>", home))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.home.unknown", Component.literal(home))), false);
         } else {
             BCKHomeManager.home(entity, home);
         }
@@ -101,7 +102,7 @@ public class BCKHomeHandler {
                 }
             }.getEntity())) == 0) {
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.homes.player.no_homes").getString()).replace("<player>", (new Object() {
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.no_homes", Component.literal(new Object() {
                         public Entity getEntity() {
                             try {
                                 return EntityArgument.getEntity(arguments, "player");
@@ -110,10 +111,10 @@ public class BCKHomeHandler {
                                 return null;
                             }
                         }
-                    }.getEntity()).getName().getString()))), false);
+                    }.getEntity().getName().getString()))), false);
             } else {
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.homes.player.homes.top").getString()).replace("<player>", (new Object() {
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.homes.top", Component.literal(new Object() {
                         public Entity getEntity() {
                             try {
                                 return EntityArgument.getEntity(arguments, "player");
@@ -122,7 +123,7 @@ public class BCKHomeHandler {
                                 return null;
                             }
                         }
-                    }.getEntity()).getName().getString())).replace("<count>", new java.text.DecimalFormat("##.##").format(BCKHomeManager.count((new Object() {
+                    }.getEntity().getName().getString()), Component.literal(new java.text.DecimalFormat("##.##").format(BCKHomeManager.count((new Object() {
                         public Entity getEntity() {
                             try {
                                 return EntityArgument.getEntity(arguments, "player");
@@ -150,18 +151,14 @@ public class BCKHomeHandler {
                         double x = home.has("x") ? home.get("x").getAsDouble() : 0;
                         double y = home.has("y") ? home.get("y").getAsDouble() : 0;
                         double z = home.has("z") ? home.get("z").getAsDouble() : 0;
-                        // Modèle de texte pour chaque home
-                        String template = Component.translatable("command.homes.player.homes.middle").getString();
-                        // Remplacement des valeurs dans le modèle
-                        String homeText = template.replace("<num>", String.valueOf(i + 1)).replace("<name>", name).replace("<dimension>", dimension).replace("<x>", String.format("%.2f", x)).replace("<y>", String.format("%.2f", y)).replace("<z>", String.format("%.2f", z));
-                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(homeText), false);
+                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.homes.middle", Component.literal(String.valueOf(i + 1)), Component.literal(name), Component.literal(dimension), Component.literal(String.format("%.2f", x)), Component.literal(String.format("%.2f", y)), Component.literal(String.format("%.2f", z)))), false);
                     }
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.homes.player.homes.bottom").getString())), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.homes.bottom")), false);
             }
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("permissions.no_permission").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("permissions.no_permission", Component.literal("homes.view"))), false);
         }
     }
 
@@ -169,10 +166,10 @@ public class BCKHomeHandler {
         if (entity == null) return;
         if (BCKHomeManager.count(entity) == 0) {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.homes.no_homes").getString()).replace("<player>", entity.getName().getString()))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.no_homes", Component.literal(entity.getName().getString()))), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.homes.bis.homes.top").getString()).replace("<player>", entity.getName().getString())).replace("<count>", new java.text.DecimalFormat("##.##").format(BCKHomeManager.count(entity))))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.bis.homes.top", Component.literal(entity.getName().getString()), Component.literal(new java.text.DecimalFormat("##.##").format(BCKHomeManager.count(entity))))), false);
             if (entity instanceof Player _player && !_player.level().isClientSide())
                 // Corps (liste des homes)
                 for (int i = 0; i < BCKHomeManager.homes(_player).size(); i++) {
@@ -182,14 +179,10 @@ public class BCKHomeHandler {
                     double x = home.has("x") ? home.get("x").getAsDouble() : 0;
                     double y = home.has("y") ? home.get("y").getAsDouble() : 0;
                     double z = home.has("z") ? home.get("z").getAsDouble() : 0;
-                    // Modèle de texte pour chaque home
-                    String template = Component.translatable("command.homes.player.homes.middle").getString();
-                    // Remplacement des valeurs dans le modèle
-                    String homeText = template.replace("<num>", String.valueOf(i + 1)).replace("<name>", name).replace("<dimension>", dimension).replace("<x>", String.format("%.2f", x)).replace("<y>", String.format("%.2f", y)).replace("<z>", String.format("%.2f", z));
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(homeText), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.homes.middle", Component.literal(String.valueOf(i + 1)), Component.literal(name), Component.literal(dimension), Component.literal(String.format("%.2f", x)), Component.literal(String.format("%.2f", y)), Component.literal(String.format("%.2f", z)))), false);
                 }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.homes.player.homes.bottom").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.homes.player.homes.bottom")), false);
         }
     }
 }

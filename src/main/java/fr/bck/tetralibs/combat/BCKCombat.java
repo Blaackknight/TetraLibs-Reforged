@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -48,7 +49,7 @@ public class BCKCombat {
 
     public static void kill(Entity entity) {
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_combat.join_while_in_combat").getString()), false);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_combat.join_while_in_combat")), false);
         TetralibsMod.queueServerWork(30, entity::kill);
         exit(entity);
     }

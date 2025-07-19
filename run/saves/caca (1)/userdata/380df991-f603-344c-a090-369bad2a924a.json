@@ -1,0 +1,47 @@
+{
+  "economy": {
+    "money": 21001.0,
+    "bank": 11.0
+  },
+  "permissions": [
+    "block.place",
+    "block.break",
+    "item.drop",
+    "item.pickup",
+    "player.send_message",
+    "player.move",
+    "player.jump",
+    "player.interact",
+    "player.attack",
+    "server.command.help",
+    "server.command.me",
+    "server.command.msg",
+    "server.command.tell",
+    "server.command.w",
+    "server.command.teammsg",
+    "server.command.tm",
+    "server.command.trigger",
+    "bck"
+  ],
+  "default_username": "Dev",
+  "uuid": "380df991-f603-344c-a090-369bad2a924a",
+  "lich_whisper": {
+    "level": 4.0
+  },
+  "first_join": false,
+  "tetra_page": {
+    "page": 1
+  },
+  "first_joined": true,
+  "homes": [
+    {
+      "name": "caca",
+      "dimension": "minecraft:overworld",
+      "x": -4.766801794450687,
+      "y": -60.0,
+      "z": -4.648196723072022,
+      "pitch": 28.711582,
+      "yaw": 17.243935
+    }
+  ]
+}

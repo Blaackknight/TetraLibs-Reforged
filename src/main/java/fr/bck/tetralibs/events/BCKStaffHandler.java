@@ -15,6 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -50,12 +51,12 @@ public class BCKStaffHandler {
         if (entity.isShiftKeyDown()) {
             BCKUtils.EntityUtil.playSound(entity, ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("minecraft:block.respawn_anchor.charge")), 1, 1);
             if (entity instanceof Player _player)
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("bck_staff.right_click.pos2.success").getString()).replace("<pos>", String.valueOf(pos)))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_staff.right_click.pos2.success", Component.literal(String.valueOf(pos)))), false);
 
         } else {
             BCKUtils.EntityUtil.playSound(entity, ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("minecraft:entity.experience_orb.pickup")), 1, 1);
             if (entity instanceof Player _player)
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("bck_staff.right_click.pos1.success").getString()).replace("<pos>", String.valueOf(pos)))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("bck_staff.right_click.pos1.success", Component.literal(String.valueOf(pos)))), false);
         }
         if (event.isCancelable()) {
             event.setCanceled(true);

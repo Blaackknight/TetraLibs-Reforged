@@ -1,0 +1,22 @@
+
+#Activation / désactivation des modules TetraLibs (serveur)
+[modules]
+	bck_core = true
+	bck_backpack = false
+	bck_home = false
+	bck_leveling = false
+	bck_permissions = true
+	bck_recipe = true
+	bck_lich_guard = false
+	bck_skill = false
+	bck_spawn = false
+	bck_lich_eye = false
+	bck_lich_clear = false
+	bck_lich_whisper = true
+	bck_serverdata = true
+	bck_userdata = true
+	bck_economy_manager = true
+	bck_warps = false
+	bck_combat = false
+	bck_vanish = true
+

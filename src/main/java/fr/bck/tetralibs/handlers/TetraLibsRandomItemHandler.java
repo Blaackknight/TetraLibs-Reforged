@@ -17,6 +17,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -61,7 +62,7 @@ public class TetraLibsRandomItemHandler {
             }
         }
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.random_item.success").getString()).replace("<count>", "" + (int) DoubleArgumentType.getDouble(arguments, "count")))), true);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.random_item.success", Component.literal(String.valueOf((int) DoubleArgumentType.getDouble(arguments, "count"))))), true);
     }
 
     public static void giveOne(LevelAccessor world, double x, double y, double z, Entity entity) {
@@ -80,7 +81,7 @@ public class TetraLibsRandomItemHandler {
             }
         }
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((Component.translatable("command.tetralibs.random_item.success").getString()).replace("<count>", ("" + 1).replace(".0", "")))), true);
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.random_item.success", Component.literal(String.valueOf((int) 1)))), true);
 
     }
 }

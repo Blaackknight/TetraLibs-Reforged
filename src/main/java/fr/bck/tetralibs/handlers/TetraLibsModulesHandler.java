@@ -7,6 +7,7 @@ import fr.bck.tetralibs.core.*;
 import fr.bck.tetralibs.lich.BCKLichWhisper;
 import fr.bck.tetralibs.module.ModuleIds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 
 
@@ -46,50 +48,52 @@ import java.util.stream.Collectors;
 
 public class TetraLibsModulesHandler {
     public static void execute(LevelAccessor world, double x, double y, double z, Entity entity) {
-        if (world.isClientSide()) return;   // côté serveur uniquement
+        if (world.isClientSide()) return;              // 1. seulement serveur
 
-        /* 1) Tous les modules déclarés dans le toml serveur */
+        /* 1) modules déclarés dans le toml */
         Set<ResourceLocation> configured = ModulesConfig.getConfiguredModules();
 
-        /* 2) Construit la liste des lignes */
-        StringBuilder txt = new StringBuilder("\n");
-        String tplTrue = Component.translatable("command.tetralibs.modules.text.per_module.true").getString();
-        String tplFalse = Component.translatable("command.tetralibs.modules.text.per_module.false").getString();
-        String tplUnrec = Component.translatable("command.tetralibs.modules.text.per_module.unrecognized").getString();
-        String tplMissing = Component.translatable("command.tetralibs.modules.text.per_module.missing").getString();
+        /* 2) construit la “liste” sous forme de Component */
+        MutableComponent listComp = Component.empty().append("\n");
 
         for (ResourceLocation id : configured) {
             boolean present = ModuleManager.modulesContains(id);
             boolean enabled = ModulesConfig.isEnabled(id);
             boolean defaultVal = ModulesConfig.getDefaultState(id);
 
-            String ID = id.equals(ModuleIds.BCK_CORE) ? BCKCore.Utils.color + id : id.toString();
-            String line;
+            Component idComp = id.equals(ModuleIds.BCK_CORE) ? Component.literal(BCKCore.Utils.color + id) : Component.literal(id.toString());
 
-            if (!present) {
-                line = tplUnrec.replace("<module>", ID);
-            } else if (!ModulesConfig.defaultModulesContains(id.getPath())) {
-                line = tplMissing.replace("<module>", ID);
-            } else {
-                String base = enabled ? tplTrue : tplFalse;
-                line = base.replace("<module>", ID).replace("<value>", String.valueOf(enabled)).replace("<default_value>", String.valueOf(defaultVal));
-            }
-            txt.append(line).append("\n");
+            Component line = switch (0) {       // juste pour le pattern-matching
+                default -> {                    // on choisit la bonne key
+                    if (!present)
+                        yield Component.translatable("command.tetralibs.modules.text.per_module.unrecognized", idComp);
+                    if (!ModulesConfig.defaultModulesContains(id.getPath()))
+                        yield Component.translatable("command.tetralibs.modules.text.per_module.missing", idComp);
+                    // true / false (+ 3 paramètres)
+                    yield Component.translatable(enabled ? "command.tetralibs.modules.text.per_module.true" : "command.tetralibs.modules.text.per_module.false", idComp, Component.literal(String.valueOf(enabled)), Component.literal(String.valueOf(defaultVal)));
+                }
+            };
+
+            listComp.append(line).append("\n");
         }
 
         if (configured.isEmpty()) {
-            txt.append(Component.translatable("command.tetralibs.modules.text.no_modules_available").getString());
+            listComp.append(Component.translatable("command.tetralibs.modules.text.no_modules_available"));
         }
 
-        /* 3) Remplacement <num> / <list> dans le header */
-        String listText = txt.toString().trim();
-        String header = Component.translatable("command.tetralibs.modules.text").getString().replace("<list>", listText).replace("<num>", String.valueOf(configured.size()));
+        /* 3) header avec PLACEHOLDERS dans l’ordre num (= %1$s) puis liste (= %2$s) */
+        //  ⚠ Assure-toi que la clé ressemble à :
+        //  "command.tetralibs.modules.text": "§6[...] Configurations: §b§l§o(%1$s)§r\n%2$s"
+        Component header = Component.translatable("command.tetralibs.modules.text", Component.literal(String.valueOf(configured.size())), // %1$s
+                listComp                                            // %2$s
+        );
 
-        /* 4) Envoi au joueur ou à la console */
-        if (entity == null) {
-            BCKLichWhisper.send(Component.nullToEmpty(header), 6, true);
-        } else if (entity instanceof Player p && !p.level().isClientSide()) {
-            p.displayClientMessage(BCKUtils.TextUtil.toStyled(header), false);
+        /* 4) envoi */
+        if (entity instanceof Player p && !p.level().isClientSide()) {
+            p.displayClientMessage(header, false);
+        } else {
+            // console / absence de joueur
+            BCKLichWhisper.send(header, 6, true);
         }
     }
 
@@ -111,10 +115,10 @@ public class TetraLibsModulesHandler {
                 BCKLog.info(BCKCore.TITLES_COLORS.title(TetraLibs.class), "§9Server modules §e-> §asynchronized §e-> §dClient");
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.tetralibs.modules.reload").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.modules.reload")), false);
         } else {
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((Component.translatable("command.tetralibs.error.client_side").getString())), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.error.client_side")), false);
         }
     }
 }

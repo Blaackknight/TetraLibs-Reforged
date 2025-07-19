@@ -3,6 +3,7 @@ package fr.bck.tetralibs.core;
 import fr.bck.tetralibs.TetralibsMod;
 import fr.bck.tetralibs.commands.CommandRegister;
 import fr.bck.tetralibs.module.TetraModule;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -22,8 +23,11 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+
 
 
 
@@ -55,6 +59,8 @@ import java.util.Objects;
  */
 @Mod.EventBusSubscriber(modid = TetralibsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 final class LichServerHooks {
+    private static final Logger log = LoggerFactory.getLogger(LichServerHooks.class);
+
     public static final class Utils {
         // ta couleur
         public static final String color = "§7";
@@ -203,6 +209,11 @@ final class LichServerHooks {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent e) {
         if (e.side.isServer()) return;
+        ModuleManager.processModules(ModuleManager.Hook.CLIENT);
+    }
+
+    @SubscribeEvent
+    public static void onClientChat(ClientChatReceivedEvent e) {
         ModuleManager.processModules(ModuleManager.Hook.CLIENT);
     }
 

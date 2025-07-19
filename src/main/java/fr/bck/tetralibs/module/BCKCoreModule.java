@@ -1,11 +1,15 @@
 package fr.bck.tetralibs.module;
 
+import fr.bck.tetralibs.TetralibsMod;
 import fr.bck.tetralibs.config.ModulesConfig;
 import fr.bck.tetralibs.core.BCKCore;
 import fr.bck.tetralibs.core.BCKLog;
+import fr.bck.tetralibs.core.BCKUtils;
 import fr.bck.tetralibs.core.ModuleManager;
+import fr.bck.tetralibs.network.InitCategoriesMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.LevelEvent;
 
@@ -13,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static fr.bck.tetralibs.core.BCKUtils.ServerUtil.getWorldFolderName;
+
 
 
 
@@ -73,5 +78,12 @@ public final class BCKCoreModule implements TetraModule {
                 // 2) on collecte en Map<path, override>
                 .collect(Collectors.toMap(ResourceLocation::getPath, rl -> !ModulesConfig.isEnabled(rl)  // true = on force false côté client
                 ));
+        TetralibsMod.PACKET_HANDLER.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> sp), new InitCategoriesMessage(ModuleManager.selectionMap()));
+    }
+
+    @Override
+    public void onClientChat(ClientChatReceivedEvent event) {
+        TetraModule.super.onClientChat(event);
+        event.setMessage(BCKUtils.TextUtil.toStyled(event.getMessage(), false));
     }
 }

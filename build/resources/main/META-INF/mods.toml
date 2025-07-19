@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/Blaackknight/TetraLibs-Reforged/issues"
 
 [[mods]]
 modId="tetralibs"
-version="${file.jarVersion}"
+version="2.0.04"
 displayName="TetraLibs: Reforged"
 displayURL="https://www.bck-inc.fr/tetralibs"
 logoFile="logo.png"

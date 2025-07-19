@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -162,6 +163,11 @@ public final class TetraRegistries {
      * Données utilisateur (NBT/JSON)
      */
     public static final RegistryObject<TetraModule> BCK_COMBAT = reg("bck_combat", BCKCombatModule::new);
+
+    /**
+     * Données utilisateur (NBT/JSON)
+     */
+    public static final RegistryObject<TetraModule> BCK_VANISH = reg("bck_vanish", BCKVanishModule::new);
 
     /* ─────────────────────────── ENREGISTREMENT SUR LE BUS ─────────────────────────── */
 

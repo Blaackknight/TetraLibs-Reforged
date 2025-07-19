@@ -10,6 +10,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -45,7 +46,7 @@ public class BCKSpawnHandler {
         if (!world.isClientSide()) {
             if (BCKSpawn.setSpawn(entity.level().dimension().location().toString(), x, y, z, (entity.getXRot()), (entity.getYRot()))) {
                 if (entity instanceof Player _player && !_player.level().isClientSide())
-                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((((((Component.translatable("command.setspawn.success").getString()).replace("<z>", "" + z)).replace("<y>", "" + y)).replace("<x>", "" + x)).replace("<yaw>", "" + entity.getYRot())).replace("<pitch>", "" + entity.getXRot())).replace("<world>", entity.level().dimension().location().toString()))), false);
+                    _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.setspawn.success", Component.literal(String.valueOf(z)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(entity.getYRot())), Component.literal(String.valueOf(entity.getXRot())), Component.literal(entity.level().dimension().location().toString()))), false);
             }
         }
     }

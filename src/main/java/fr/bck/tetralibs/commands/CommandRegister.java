@@ -8,9 +8,11 @@ import fr.bck.tetralibs.core.BCKLog;
 import fr.bck.tetralibs.home.BCKHomeManager;
 import fr.bck.tetralibs.module.ModuleIds;
 import fr.bck.tetralibs.spawn.BCKSpawn;
+import fr.bck.tetralibs.vanish.BCKVanishManager;
 import fr.bck.tetralibs.warps.BCKWarpManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
+
 
 
 
@@ -66,6 +68,11 @@ public class CommandRegister {
             WarpCommand.register(dispatcher);
             WarpsCommand.register(dispatcher);
             BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKWarpManager.class), "Commands registered.");
+        }
+
+        if (isEnabledSafe(ModuleIds.BCK_VANISH)) {
+            VanishCommand.register(dispatcher);
+            BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKVanishManager.class), "Commands registered.");
         }
     }
 

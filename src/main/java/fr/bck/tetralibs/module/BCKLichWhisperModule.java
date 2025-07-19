@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -27,6 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 import java.util.Set;
+
 
 
 
@@ -89,13 +91,13 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         String converted = ("server.command." + datas[0]);
         String player = "Server";
         if (sender != null) player = sender.getDisplayName().getString();
-        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(((Component.translatable("lich_whisper.on_command").getString().replace("<player>", BCKUtils.TextUtil.universal(player, sender))).replace("<cmd>", command))), 4);  // Niveau de log 4 pour une information de niveau intermédiaire.
+        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(((Component.translatable("lich_whisper.on_command", Component.literal(BCKUtils.TextUtil.universal(player, sender)), Component.literal(command))))), 4);  // Niveau de log 4 pour une information de niveau intermédiaire.
     }
 
     @Override
     public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         super.onBlockPlace(event);
-        Player player = (Player) event.getEntity();
+        Entity player = event.getEntity() instanceof EnderMan ? event.getEntity() : (Player) event.getEntity();
         BlockPos pos = event.getPos();
         double x = pos.getX();
         double y = pos.getY();
@@ -106,7 +108,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         assert serv != null;
         WorldData data = serv.getWorldData();
         assert player != null;
-        Component logMessage = Component.nullToEmpty(String.valueOf(Component.literal(((Component.translatable("lich_whisper.on_block_place").getString()).replace("<player>", BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)).replace("<x>", ("" + x)).replace("<y>", ("" + y)).replace("<z>", ("" + z)).replace("<world>", data.getLevelName()).replace("<block>", (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block.getBlock())).toString()))))));
+        Component logMessage = BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_block_place", Component.literal(BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(z)), Component.literal(data.getLevelName()), Component.literal(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block.getBlock())).toString())));
         BCKLichWhisper.send(logMessage, 5);
     }
 
@@ -123,7 +125,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         MinecraftServer serv = world.getServer();
         assert serv != null;
         WorldData data = serv.getWorldData();
-        Component logMessage = Component.nullToEmpty(String.valueOf(Component.literal(((Component.translatable("lich_whisper.on_block_break").getString()).replace("<player>", BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)).replace("<x>", ("" + x)).replace("<y>", ("" + y)).replace("<z>", ("" + z)).replace("<world>", data.getLevelName()).replace("<block>", (Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block.getBlock())).toString()))))));
+        Component logMessage = BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_block_break", Component.literal(BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(z)), Component.literal(data.getLevelName()), Component.literal(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block.getBlock())).toString())));
         BCKLichWhisper.send(logMessage, 5);
     }
 
@@ -139,7 +141,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         MinecraftServer serv = world.getServer();
         assert serv != null;
         WorldData data = serv.getWorldData();
-        BCKLichWhisper.send(Component.nullToEmpty(Component.literal((Component.translatable("lich_whisper.on_item_drop").getString()).replace("<player>", BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)).replace("<x>", String.valueOf(x)).replace("<y>", String.valueOf(y)).replace("<z>", String.valueOf(z)).replace("<world>", data.getLevelName()).replace("<item>", BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()).replace("<count>", "" + item.getCount())).getString()), 5);
+        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_item_drop", Component.literal(BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(z)), Component.literal(data.getLevelName()), Component.literal(BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()), Component.literal(String.valueOf(item.getCount())))), 5);
     }
 
     @Override
@@ -154,7 +156,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         MinecraftServer server = world.getServer();
         assert server != null;
         WorldData data = server.getWorldData();
-        BCKLichWhisper.send(Component.literal((Component.translatable("lich_whisper.on_item_pickup").getString()).replace("<player>", BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)).replace("<x>", String.valueOf(x)).replace("<y>", String.valueOf(y)).replace("<z>", String.valueOf(z)).replace("<world>", data.getLevelName()).replace("<item>", BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()).replace("<count>", "" + item.getCount())), 5);
+        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_item_pickup", Component.literal(BCKUtils.TextUtil.universal(player.getDisplayName().getString(), player)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(z)), Component.literal(data.getLevelName()), Component.literal(BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()), Component.literal(String.valueOf(item.getCount())))), 5);
     }
 
     @Override
@@ -169,7 +171,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         MinecraftServer serv = world.getServer();
         assert serv != null;
         WorldData data = serv.getWorldData();
-        BCKLichWhisper.send(Component.literal((Component.translatable("lich_whisper.on_item_expire").getString()).replace("<player>", BCKUtils.TextUtil.universal(entity.getDisplayName().getString(), entity)).replace("<x>", "" + x).replace("<y>", "" + y).replace("<z>", "" + z).replace("<world>", data.getLevelName()).replace("<item>", BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()).replace("<count>", "" + item.getCount())), 5);
+        BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_item_expire", Component.literal(BCKUtils.TextUtil.universal(entity.getDisplayName().getString(), entity)), Component.literal(String.valueOf(x)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(z)), Component.literal(data.getLevelName()), Component.literal(BCKUtils.ItemUtil.createItemComponent(item.getItem()).getString()), Component.literal(String.valueOf(item.getCount())))), 5);
     }
 
     @Override
@@ -187,7 +189,7 @@ public final class BCKLichWhisperModule extends CoreDependentModule {
         if (entity == null) return;
         if (event.getHand() != event.getEntity().getUsedItemHand()) return;
         if (!entity.isShiftKeyDown() && blockstate.is(BlockTags.create(ResourceLocation.parse("forge:chests")))) {
-            BCKLichWhisper.send(Component.nullToEmpty(((((((Component.translatable("lich_whisper.on_chest_open").getString()).replace("<player>", BCKUtils.TextUtil.universal(entity.getDisplayName().getString(), entity))).replace("<block>", Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(blockstate.getBlock())).toString())).replace("<z>", "" + z)).replace("<y>", "" + y)).replace("<x>", "" + x)).replace("<world>", data.getLevelName())), 5);
+            BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.on_chest_open", Component.literal(BCKUtils.TextUtil.universal(entity.getDisplayName().getString(), entity)), Component.literal(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(blockstate.getBlock())).toString()), Component.literal(String.valueOf(z)), Component.literal(String.valueOf(y)), Component.literal(String.valueOf(x)), Component.literal(data.getLevelName()))), 5);
         }
     }
 }

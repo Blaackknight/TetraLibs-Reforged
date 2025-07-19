@@ -1,8 +1,10 @@
 package fr.bck.tetralibs.core;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import fr.bck.tetralibs.TetralibsMod;
 import fr.bck.tetralibs.data.BCKServerdata;
 import fr.bck.tetralibs.data.BCKUserdata;
 import fr.bck.tetralibs.network.BCKSoundNetworkHandler;
@@ -21,6 +23,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -59,12 +63,17 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -77,6 +86,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 
 
@@ -102,6 +112,7 @@ import java.util.regex.Pattern;
  ≡ SOFTWARE.                                                                     ≡
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
+@Mod.EventBusSubscriber(modid = TetralibsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BCKUtils {
     public static final class Utils {
         // ta couleur
@@ -470,170 +481,303 @@ public class BCKUtils {
             return "<" + target + "|hoverText|§8Type: §7" + type + "\n" + "§6ID: §e" + id + "\n" + "§2UUID: §a" + uuid + ">";
         }
 
-        public static Component toStyled(String text, boolean callback) {
-            if (text == null || text.isEmpty()) {
-                return Component.empty();
-            }
-            /*
-             * 1) group(2) = nom de classe dans <class:…>
-             * 2) sinon group(3)=displayText, group(4)=clickAction, group(5)=clickValue, group(6)=hoverText
-             */
-            Pattern pattern = Pattern.compile("<([^|>]+)(?:\\|(?!hoverText)([^|>]+)\\|([^|>]+))?(?:\\|hoverText\\|([^>]+))?>");
-            Matcher matcher = pattern.matcher(text);
-            MutableComponent styledText = Component.empty();
-            int lastIndex = 0;
+        /**
+         * Convertit une chaîne brue (avec codes ‘§’ et balises custom) en
+         * {@link MutableComponent} complètement stylé.
+         * <p>
+         * Exemple d’appel :
+         * player.sendSystemMessage(toStyled("§7- <\Click me|run_command|/help>", true));
+         */
+        public static MutableComponent toStyled(String src, boolean debug) {
 
-            while (matcher.find()) {
-                // Ajouter le texte avant la balise en appliquant parseLegacyText()
-                String beforeText = text.substring(lastIndex, matcher.start());
-                if (!beforeText.isEmpty()) {
-                    MutableComponent parsedBefore = parseFormat(beforeText);
-                    if (!parsedBefore.getString().isEmpty()) { // Éviter les composants vides
-                        styledText.append(handleNewLines(parsedBefore));
-                        if (callback)
-                            BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "Before Text: " + parsedBefore);
-                    }
+            MutableComponent result = Component.empty();          // rendu final
+            Style current = Style.EMPTY;                          // style hérité au fil du parse
+
+            /*──────────────────────── split par balises ───────────────────────*/
+            Pattern p = Pattern.compile("<([^|>]+)"                           // groupe 1 : display
+                    + "(?:\\|(?!hoverText)([^|>]+)\\|([^|>]+))?"              // groupes 2-3 : clickEvent
+                    + "(?:\\|hoverText\\|([^>]+))?>"                          // groupe 4 : hover
+            );
+
+            int last = 0;
+            Matcher m = p.matcher(src);
+
+            while (m.find()) {
+
+                /* 1) texte brut avant la balise */
+                if (m.start() > last) {
+                    String raw = src.substring(last, m.start());
+                    result.append(parseLegacy(raw).setStyle(current));
                 }
 
-                MutableComponent styledElement;
+                /* 2) contenu de la balise */
+                String disp = m.group(1);
+                String act = m.group(2);
+                String val = m.group(3);
+                String hover = m.group(4);
 
+                MutableComponent display = parseLegacy(disp).setStyle(current);
+                MutableComponent styled = applyStyledText(display, act, val, hover);
+                result.append(styled);
 
-                // Extraire les informations des balises
-                String displayText = matcher.group(1);
-                String clickAction = matcher.group(2);
-                String clickValue = matcher.group(3);
-                String hoverValue = matcher.group(4);
+                if (debug) BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.TextUtil.class), "§e[styled] §r" + styled);
 
-                // Cas spécial des balises uniquement hoverText
-
-                if (callback) {
-                    BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "display: " + displayText);
-                    BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "action: " + clickAction);
-                    BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "click: " + clickValue);
-                    BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "hover: " + hoverValue);
-                }
-
-                // Appliquer parseLegacyText sur le displayText AVANT d'envoyer à applyStyledText()
-                styledElement = applyStyledText(parseFormat(displayText).getString(), clickAction, clickValue, hoverValue);
-
-                if (callback)
-                    BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Apply", "Styled Element: " + styledElement);
-
-                styledText.append(styledElement);
-                lastIndex = matcher.end();
-
+                last = m.end();
             }
 
-            // Ajouter le reste du texte après la dernière balise
-            String remainingText = text.substring(lastIndex);
-            if (!remainingText.isEmpty()) {
-                MutableComponent parsedRemaining = parseFormat(remainingText);
-                if (!parsedRemaining.getString().isEmpty()) {
-                    styledText.append(handleNewLines(parsedRemaining));
-                    if (callback)
-                        BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "After Text: " + parsedRemaining);
-                }
+            /* 3) reste du texte après la dernière balise */
+            if (last < src.length()) {
+                result.append(parseLegacy(src.substring(last)).setStyle(current));
             }
+            return result;
+        }
 
-            if (callback)
-                BCKLog.debug(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/Text", "Final Styled Text: " + styledText);
-
-            return styledText;
+        public static MutableComponent toStyled(String src) {
+            return toStyled(src, false);
         }
 
         /**
-         * Applique un style au texte donné, y compris les actions de clic et de survol.
-         *
-         * @param displayText Le texte à styliser.
-         * @param clickAction L'action de clic associée au texte.
-         * @param clickValue  La valeur de l'action de clic.
-         * @param hoverText   Le texte à afficher au survol (peut être une clé de traduction).
-         * @return Le texte stylisé avec le clic et les événements de survol appliqués.
+         * ToStyled – v6
+         * ➤ Laisse désormais les {@link TranslatableContents} intacts côté serveur :
+         * le texte est traduit seulement sur le client, évitant l’affichage des clés.
          */
-        private static MutableComponent applyStyledText(String displayText, String clickAction, String clickValue, String hoverText) {
-            Style style = Style.EMPTY;
-
-            // Si il y a une action de clic et que l'action est valide, on l'applique
-            if (clickAction != null && !clickAction.isEmpty() && clickValue != null && !clickValue.isEmpty()) {
-                ClickEvent.Action action = getClickAction(clickAction);
-                if (action != null) {
-                    style = style.withClickEvent(new ClickEvent(action, clickValue));
-                } else {
-                    BCKLog.warn(BCKCore.TITLES_COLORS.title(BCKUtils.class) + "§6/TextUtil/StyledText", "Unknown clickAction: " + clickAction);
+        public static Component toStyled(Component source, boolean debugLog) {
+            /* ------------------------------------------------------------
+             * 0. CAS SPÉCIAL : TranslatableComponent → on ne le résout PAS.
+             * ---------------------------------------------------------- */
+            if (source.getContents() instanceof TranslatableContents tc) {
+                Object[] rawArgs = tc.getArgs();
+                Object[] styled = new Object[rawArgs.length];
+                for (int i = 0; i < rawArgs.length; i++) {
+                    Object arg = rawArgs[i];
+                    if (arg instanceof Component c) {
+                        styled[i] = toStyled(c, debugLog); // récursion
+                    } else {
+                        styled[i] = arg; // entier, string…
+                    }
                 }
+                MutableComponent copy = Component.translatable(tc.getKey(), styled).setStyle(source.getStyle());
+                for (Component sib : source.getSiblings())
+                    copy.append(toStyled(sib, debugLog));
+                return copy;
             }
 
-            // Résolution de la clé de traduction pour hoverText, si applicable
-            if (hoverText != null && !hoverText.isEmpty()) {
-                if (I18n.exists(hoverText)) {
-                    hoverText = I18n.get(hoverText);  // Résout la clé de traduction en texte
+            /* ------------------------------------------------------------
+             * 1. Cas normal : literal + éventuels codes couleur / balises.
+             * ---------------------------------------------------------- */
+            MutableComponent out = Component.empty();
+            final Style[] current = {Style.EMPTY};
+
+            source.visit((styleFromParent, literal) -> {
+                if (styleFromParent != Style.EMPTY) current[0] = styleFromParent;
+
+                String[] lines = literal.split("\\\\n", -1);
+                for (int li = 0; li < lines.length; li++) {
+                    String segment = lines[li];
+                    FormatResult r = segment.contains("<") ? processInlineTags(segment, current[0], debugLog) : parseFormat(segment, current[0]);
+
+                    out.append(r.component());
+                    current[0] = r.trailing();
+
+                    if (li < lines.length - 1) {
+                        out.append(Component.literal("\\n").setStyle(current[0]));
+                    }
                 }
-                style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, toStyled(hoverText)));
+                return Optional.empty();
+            }, Style.EMPTY);
+
+            for (Component sib : source.getSiblings()) {
+                MutableComponent processed = (MutableComponent) toStyled(sib, debugLog);
+                if (processed.getStyle() == Style.EMPTY) processed.setStyle(current[0]);
+                out.append(processed);
             }
-
-            // Log du composant final pour débogage
-            //if (!style.isEmpty()) SuperLog.info("TetraLibs/BCKUtils/StyledText", "Final Component: " + Component.literal(displayText).setStyle(style));
-
-            return Component.literal(displayText).setStyle(style);
+            return out;
         }
 
-        public static Component toStyled(String text) {
-            return toStyled(text, false);
+        private static MutableComponent mergeStyle(MutableComponent comp, Style inherited) {
+            return (inherited == Style.EMPTY) ? comp : comp.setStyle(comp.getStyle().applyTo(inherited));
         }
 
-        // Méthode pour appliquer le format personnalisé à un texte avec des couleurs hexadécimales et des styles supplémentaires
-        public static MutableComponent parseFormat(String text) {
-            // Expression régulière pour matcher <#FF0000> ou <#FF0000|italic=true|obfuscated=true> etc.
-            Pattern pattern = Pattern.compile("<#([0-9A-Fa-f]{6})>(?:\\|(.*?))?>");
-            Matcher matcher = pattern.matcher(text);
-            MutableComponent builder = Component.empty();  // MutableComponent vide
+        public static Component toStyled(Component input) {
+            return toStyled(input, false);
+        }
 
-            int lastIndex = 0;
-            while (matcher.find()) {
-                // Ajouter le texte avant le match
-                String beforeText = text.substring(lastIndex, matcher.start());
-                builder.append(Component.literal(beforeText));
+        /**
+         * Ajoute click / hover sans jamais convertir en String.
+         */
+        private static MutableComponent applyStyledText(MutableComponent base, @Nullable String clickAction, @Nullable String clickValue, @Nullable String hoverTextRaw) {
 
-                // Extraire la couleur hexadécimale
-                String hexColor = matcher.group(1);
-                String styles = matcher.group(2);
+            MutableComponent comp = base.copy();
 
-                // Créer un TextColor avec la couleur hexadécimale
-                TextColor color = TextColor.parseColor("#" + hexColor);
+            /* --- ClickEvent --------------------------------------------------- */
+            if (clickAction != null && clickValue != null) {
+                ClickEvent.Action act = switch (clickAction.toLowerCase(Locale.ROOT)) {
+                    case "open_url" -> ClickEvent.Action.OPEN_URL;
+                    case "run_command" -> ClickEvent.Action.RUN_COMMAND;
+                    case "suggest_command" -> ClickEvent.Action.SUGGEST_COMMAND;
+                    case "copy_to_clipboard" -> ClickEvent.Action.COPY_TO_CLIPBOARD;
+                    default -> null;
+                };
+                if (act != null) comp.withStyle(s -> s.withClickEvent(new ClickEvent(act, clickValue)));
+            }
 
-                // Créer le composant texte avec la couleur
-                MutableComponent newComponent = Component.literal("").withStyle(style -> style.withColor(color));
+            /* --- HoverEvent --------------------------------------------------- */
+            if (hoverTextRaw != null) {
+                MutableComponent hover = parseFormat(hoverTextRaw, Style.EMPTY).component(); // conserve §-codes
+                comp.withStyle(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)));
+            }
 
-                // Appliquer les styles comme italique, gras, obfusqué, barré, ou souligné
-                if (styles != null) {
-                    if (styles.contains("italic=true")) {
-                        newComponent = newComponent.withStyle(style -> style.withItalic(true));
-                    }
-                    if (styles.contains("bold=true")) {
-                        newComponent = newComponent.withStyle(style -> style.withBold(true));
-                    }
-                    if (styles.contains("obfuscated=true")) {
-                        newComponent = newComponent.withStyle(style -> style.withObfuscated(true));
-                    }
-                    if (styles.contains("strike=true")) {
-                        newComponent = newComponent.withStyle(style -> style.withStrikethrough(true));
-                    }
-                    if (styles.contains("underline=true")) {
-                        newComponent = newComponent.withStyle(style -> style.withUnderlined(true));
+            return comp;
+        }
+
+        private static final Pattern INLINE = Pattern.compile("<([^|>]+)(?:\\|(?!hoverText)([^|>]+)\\|([^|>]+))?(?:\\|hoverText\\|([^>]+))?>");
+
+        private static FormatResult processInlineTags(String segment, Style start, boolean debug) {
+            MutableComponent acc = Component.empty();
+            Style current = start;
+
+            Matcher m = INLINE.matcher(segment);
+            int last = 0;
+            while (m.find()) {
+                // Avant la balise
+                if (m.start() > last) {
+                    FormatResult r = parseFormat(segment.substring(last, m.start()), current);
+                    acc.append(r.component);
+                    current = r.trailing;
+                }
+
+                // Balise
+                String disp = m.group(1);
+                String act = m.group(2);
+                String val = m.group(3);
+                String hover = m.group(4);
+
+                // Display peut contenir des couleurs legacy ou hex : reuse parseFormat
+                FormatResult dispRes = parseFormat(disp, current);
+                MutableComponent display = dispRes.component;
+                current = dispRes.trailing;
+
+                MutableComponent styled = applyStyledText(display, act, val, hover);
+                if (styled.getStyle() == Style.EMPTY) styled.setStyle(current);
+                acc.append(styled);
+
+                if (debug) {
+                    BCKLog.debug("[styled] {}", styled);
+                }
+
+                last = m.end();
+            }
+            // Reste après la dernière balise
+            if (last < segment.length()) {
+                FormatResult r = parseFormat(segment.substring(last), current);
+                acc.append(r.component);
+                current = r.trailing;
+            }
+            return new FormatResult(acc, current);
+        }
+
+        /* ------------------------------------------------------------------
+         *  Wrapper renvoyé par parseFormat : le composant rendu + le style qui
+         *  s’applique après la fin du segment (pour transmettre aux suivants).
+         * ------------------------------------------------------------------ */
+        private record FormatResult(MutableComponent component, Style trailing) {
+        }
+
+        /**
+         * Parse un segment (sans mini‑balise) et renvoie le composant rendu + le
+         * style qui s’applique UNE FOIS le segment terminé.
+         */
+        private static FormatResult parseFormat(String text, Style start) {
+            MutableComponent acc = Component.empty();
+            Style current = start;
+            StringBuilder buf = new StringBuilder();
+
+            int i = 0;
+            while (i < text.length()) {
+                char ch = text.charAt(i);
+
+                // Legacy § codes
+                if (ch == '§' && i + 1 < text.length()) {
+                    flush(buf, acc, current);
+                    char code = Character.toLowerCase(text.charAt(++i));
+                    ChatFormatting fmt = ChatFormatting.getByCode(code);
+                    current = (fmt == null) ? current : (fmt == ChatFormatting.RESET ? Style.EMPTY : current.applyFormat(fmt));
+                    i++;
+                    continue;
+                }
+
+                // Hex tags <#RRGGBB|bold=true|…>
+                if (ch == '<' && i + 2 < text.length() && text.charAt(i + 1) == '#') {
+                    int close = text.indexOf('>', i);
+                    if (close != -1) {
+                        flush(buf, acc, current);
+                        String body = text.substring(i + 2, close);
+                        String[] parts = body.split("\\|");
+                        String hex = parts[0];
+                        Style tag = Style.EMPTY.withColor(TextColor.parseColor("#" + hex));
+                        for (int p = 1; p < parts.length; p++) {
+                            switch (parts[p].toLowerCase()) {
+                                case "italic=true" -> tag = tag.withItalic(true);
+                                case "bold=true" -> tag = tag.withBold(true);
+                                case "obfuscated=true" -> tag = tag.withObfuscated(true);
+                                case "strike=true" -> tag = tag.withStrikethrough(true);
+                                case "underline=true" -> tag = tag.withUnderlined(true);
+                            }
+                        }
+                        current = tag.applyTo(current);
+                        i = close + 1;
+                        continue;
                     }
                 }
 
-                // Ajouter le composant stylisé à la construction
-                builder.append(newComponent);
-
-                // Mettre à jour l'index
-                lastIndex = matcher.end();
+                buf.append(ch);
+                i++;
             }
+            flush(buf, acc, current);
+            return new FormatResult(acc, current);
+        }
 
-            // Ajouter le texte restant après le dernier match
-            String remainingText = text.substring(lastIndex);
-            builder.append(Component.literal(remainingText));
-            return builder;
+        private static void flush(StringBuilder buf, MutableComponent acc, Style style) {
+            if (!buf.isEmpty()) {
+                acc.append(Component.literal(buf.toString()).setStyle(style));
+                buf.setLength(0);
+            }
+        }
+
+        /**
+         * Parse les codes legacy § (couleurs et modifiers) et les convertit en un
+         * {@link MutableComponent} au style équivalent.
+         */
+        private static MutableComponent parseLegacy(String segment) {
+            MutableComponent comp = Component.empty();
+            Style current = Style.EMPTY;
+            StringBuilder buffer = new StringBuilder();
+
+            for (int i = 0; i < segment.length(); i++) {
+                char c = segment.charAt(i);
+                if (c == '§' && i + 1 < segment.length()) {
+                    // Flush du texte accumulé
+                    if (!buffer.isEmpty()) {
+                        comp.append(Component.literal(buffer.toString()).setStyle(current));
+                        buffer.setLength(0);
+                    }
+                    char code = Character.toLowerCase(segment.charAt(++i));
+                    ChatFormatting fmt = ChatFormatting.getByCode(code);
+                    if (fmt != null) {
+                        if (fmt == ChatFormatting.RESET) {
+                            current = Style.EMPTY;
+                        } else {
+                            current = current.applyFormat(fmt);
+                        }
+                    }
+                    continue;
+                }
+                buffer.append(c);
+            }
+            if (!buffer.isEmpty()) {
+                comp.append(Component.literal(buffer.toString()).setStyle(current));
+            }
+            return comp;
         }
 
         /**
@@ -816,6 +960,60 @@ public class BCKUtils {
 
         public static Component implementHoverText() {
             return Component.empty();
+        }
+
+        public static Component replace(Component src, String needle, Component replacement) {
+
+            /* --------- 1. Si c'est un composant de traduction ---------- */
+            if (src.getContents() instanceof TranslatableContents tc) {
+                // on traite chaque argument récursivement
+                Object[] newArgs = Arrays.stream(tc.getArgs()).map(arg -> (arg instanceof Component c) ? replace(c, needle, replacement) : arg).toArray();
+
+                MutableComponent copy = Component.translatable(tc.getKey(), newArgs).setStyle(src.getStyle());
+                // siblings
+                for (Component sib : src.getSiblings())
+                    copy.append(replace(sib, needle, replacement));
+                return copy;
+            }
+
+            /* --------- 2. Cas littéral : on fait le vrai "replace" ----- */
+            if (src.getContents() instanceof LiteralContents lc) {
+                String txt = lc.text();
+                if (!txt.contains(needle)) {
+                    // rien à changer ⇒ copie + siblings
+                    MutableComponent keep = Component.literal(txt).setStyle(src.getStyle());
+                    for (Component sib : src.getSiblings())
+                        keep.append(replace(sib, needle, replacement));
+                    return keep;
+                }
+
+                // on découpe en segments avant / après l'aiguille
+                MutableComponent out = Component.empty();
+                int idx = 0;
+                while (idx < txt.length()) {
+                    int pos = txt.indexOf(needle, idx);
+                    if (pos < 0) {
+                        out.append(Component.literal(txt.substring(idx)).setStyle(src.getStyle()));
+                        break;
+                    }
+                    // texte avant l'aiguille
+                    if (pos > idx) out.append(Component.literal(txt.substring(idx, pos)).setStyle(src.getStyle()));
+                    // l'aiguille remplacée par le composant voulu (copie du style parent)
+                    out.append(replacement.copy().setStyle(src.getStyle().applyTo(replacement.getStyle())));
+                    idx = pos + needle.length();
+                }
+                // siblings
+                for (Component sib : src.getSiblings())
+                    out.append(replace(sib, needle, replacement));
+                return out;
+            }
+
+            /* --------- 3. Autre contenu : copie profonde par défaut ---- */
+            MutableComponent copy = src.copy();
+            copy.getSiblings().clear();
+            for (Component sib : src.getSiblings())
+                copy.append(replace(sib, needle, replacement));
+            return copy;
         }
     }
 
@@ -2547,6 +2745,40 @@ public class BCKUtils {
                     0.2, 0.3, 0.2,         // offsets XYZ
                     0.01                   // vitesse
             );
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = TetralibsMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public abstract static class ConfigsUtils {
+        private static ModConfig SERVER_CFG;   // garde une référence
+
+        @SubscribeEvent
+        public static void onConfigLoaded(final ModConfigEvent.Loading e) {
+            ModConfig cfg = e.getConfig();
+            if (cfg.getModId().equals(TetralibsMod.MODID) && cfg.getType() == ModConfig.Type.SERVER) {
+                SERVER_CFG = cfg;
+                TetralibsMod.LOGGER.debug("Server config loaded.");
+            }
+        }
+
+        public static Map<String, Object> dumpServerConfig() {
+            if (SERVER_CFG == null) return Map.of();              // pas encore chargé
+
+            CommentedConfig root = SERVER_CFG.getConfigData();    // arborescence TOML
+            Map<String, Object> flat = new LinkedHashMap<>();
+            flatten("", root, flat);
+            return flat;
+        }
+
+        private static void flatten(String prefix, CommentedConfig node, Map<String, Object> out) {
+            node.valueMap().forEach((k, v) -> {
+                String path = prefix.isEmpty() ? k : prefix + "." + k;
+                if (v instanceof CommentedConfig sub) {
+                    flatten(path, sub, out);          // récursif
+                } else {
+                    out.put(path, v);
+                }
+            });
         }
     }
 }

@@ -5,7 +5,9 @@ import fr.bck.tetralibs.config.ModulesConfig;
 import fr.bck.tetralibs.init.TetraRegistries;
 import fr.bck.tetralibs.module.ModuleIds;
 import fr.bck.tetralibs.module.TetraModule;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -14,11 +16,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.function.BiConsumer;
+
 
 
 
@@ -258,6 +259,16 @@ public final class ModuleManager {
     public record ModuleStatus(TetraModule module, boolean enabled, boolean defaultEnabled) {
     }
 
+    public static Map<ResourceLocation, Boolean> selectionMap() {
+        Map<ResourceLocation, Boolean> map = new LinkedHashMap<>();
+
+        // listAllModuleStatuses() renvoie List<ModuleStatus>
+        for (ModuleStatus status : listAllModuleStatuses()) {
+            map.put(status.module().id(), status.enabled());
+        }
+        return map;
+    }
+
     /**
      * Tente de récupérer le TetraModule enregistré sous cet ID.
      *
@@ -274,6 +285,36 @@ public final class ModuleManager {
      */
     public static TetraModule requireModule(ResourceLocation id) {
         return getModule(id).orElseThrow(() -> new IllegalArgumentException("Module non trouvé pour l’ID " + id));
+    }
+
+    /**
+     * Appliqué côté serveur lorsqu’on reçoit {@link fr.bck.tetralibs.network.C2SApplyModulesPacket}.
+     *
+     * @param newSel map “id → enabled” envoyée par le client
+     * @param sender joueur qui a cliqué sur « Apply » (peut servir pour un message de retour)
+     * @param send   true/false
+     */
+    public static void applySelection(Map<ResourceLocation, Boolean> newSel, @Nullable ServerPlayer sender, Boolean send) {
+
+        // 1. applique dans la Config en mémoire
+        newSel.forEach(ModulesConfig::setEnabled);
+
+        // 2. écrit sur disque
+        ModulesConfig.save();
+
+        // 3. (facultatif) feedback au joueur
+        if (sender != null && send)
+            sender.sendSystemMessage(BCKUtils.TextUtil.toStyled(Component.translatable("gui.management.modules.apply")));
+    }
+
+    /**
+     * Appliqué côté serveur lorsqu’on reçoit {@link fr.bck.tetralibs.network.C2SApplyModulesPacket}.
+     *
+     * @param newSel map “id → enabled” envoyée par le client
+     * @param sender joueur qui a cliqué sur « Apply » (peut servir pour un message de retour)
+     */
+    public static void applySelection(Map<ResourceLocation, Boolean> newSel, @Nullable ServerPlayer sender) {
+        applySelection(newSel, sender, false);
     }
 
     private ModuleManager() {

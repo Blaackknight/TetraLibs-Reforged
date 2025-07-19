@@ -19,6 +19,7 @@ import java.util.*;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -55,7 +56,7 @@ public class BCKLichGuard extends SavedData {
         private static final Class<?> PARENT = Utils.class.getDeclaringClass();
 
         // full = couleur + nom simple de la classe parente
-        public static final String full = color + PARENT.getSimpleName();
+        public static final String full = color + PARENT.getSimpleName() + "§r";
     }
 
     public static final String DATA_NAME = "bck_territories";

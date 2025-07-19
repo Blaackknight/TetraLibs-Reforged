@@ -33,6 +33,7 @@ import java.util.Objects;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -101,6 +102,22 @@ public class TetraLibsCommand {
                 // Si aucun numéro de page n'est spécifié, afficher la page 1 par défaut
                 .executes(context -> {
                     TetraLibsDevHandler.stop(Objects.requireNonNull(context.getSource().getEntity()));
+                    return 0;
+                })).then(Commands.literal("text")
+                // Si aucun numéro de page n'est spécifié, afficher la page 1 par défaut
+                .executes(arguments -> {
+                    Level world = arguments.getSource().getUnsidedLevel();
+                    double x = arguments.getSource().getPosition().x();
+                    double y = arguments.getSource().getPosition().y();
+                    double z = arguments.getSource().getPosition().z();
+                    Entity entity = arguments.getSource().getEntity();
+                    if (entity == null && world instanceof ServerLevel _servLevel)
+                        entity = FakePlayerFactory.getMinecraft(_servLevel);
+                    Direction direction = Direction.DOWN;
+                    if (entity != null) direction = entity.getDirection();
+                    assert entity != null;
+                    Entity finalEntity = entity;
+                    BCKCore.doRiskyOperation(BCKCore.TITLES_COLORS.title(TetraLibsCommand.class), "Fatal when sending dev text -> ", () -> TetraLibsDevHandler.text(finalEntity));
                     return 0;
                 })).then(Commands.literal("modules").then(Commands.literal("reload").executes(arguments -> {
             Level world = arguments.getSource().getUnsidedLevel();

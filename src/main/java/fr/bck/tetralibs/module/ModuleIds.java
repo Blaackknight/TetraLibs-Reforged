@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -27,41 +28,30 @@ import net.minecraft.resources.ResourceLocation;
  ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡*/
 
 public final class ModuleIds {
-    public static final ResourceLocation BCK_CORE =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_core");
-    public static final ResourceLocation BCK_BACKPACK =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_backpack");
-    public static final ResourceLocation BCK_HOME =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_home");
-    public static final ResourceLocation BCK_LEVELING =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_leveling");
-    public static final ResourceLocation BCK_PERMISSIONS =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_permissions");
-    public static final ResourceLocation BCK_RECIPE =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_recipe");
-    public static final ResourceLocation BCK_LICH_GUARD =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_lich_guard");
-    public static final ResourceLocation BCK_SKILL =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_skill");
-    public static final ResourceLocation BCK_SPAWN =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_spawn");
-    public static final ResourceLocation BCK_LICH_EYE =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_lich_eye");
-    public static final ResourceLocation BCK_LICH_CLEAR =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_lich_clear");
-    public static final ResourceLocation BCK_LICH_WHISPER =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_lich_whisper");
-    public static final ResourceLocation BCK_SERVERDATA =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_serverdata");
-    public static final ResourceLocation BCK_USERDATA =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_userdata");
-    public static final ResourceLocation BCK_ECONOMY_MANAGER =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_economy_manager");
-    public static final ResourceLocation BCK_WARPS =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_warps");
+    private static ResourceLocation rl(String namespace, String path) {
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    }
 
-    public static final ResourceLocation BCK_COMBAT =
-            ResourceLocation.fromNamespaceAndPath("tetralibs", "bck_combat");
+    public static final ResourceLocation BCK_CORE = rl("tetralibs", "bck_core");
+    public static final ResourceLocation BCK_BACKPACK = rl("tetralibs", "bck_backpack");
+    public static final ResourceLocation BCK_HOME = rl("tetralibs", "bck_home");
+    public static final ResourceLocation BCK_LEVELING = rl("tetralibs", "bck_leveling");
+    public static final ResourceLocation BCK_PERMISSIONS = rl("tetralibs", "bck_permissions");
+    public static final ResourceLocation BCK_RECIPE = rl("tetralibs", "bck_recipe");
+    public static final ResourceLocation BCK_LICH_GUARD = rl("tetralibs", "bck_lich_guard");
+    public static final ResourceLocation BCK_SKILL = rl("tetralibs", "bck_skill");
+    public static final ResourceLocation BCK_SPAWN = rl("tetralibs", "bck_spawn");
+    public static final ResourceLocation BCK_LICH_EYE = rl("tetralibs", "bck_lich_eye");
+    public static final ResourceLocation BCK_LICH_CLEAR = rl("tetralibs", "bck_lich_clear");
+    public static final ResourceLocation BCK_LICH_WHISPER = rl("tetralibs", "bck_lich_whisper");
+    public static final ResourceLocation BCK_SERVERDATA = rl("tetralibs", "bck_serverdata");
+    public static final ResourceLocation BCK_USERDATA = rl("tetralibs", "bck_userdata");
+    public static final ResourceLocation BCK_ECONOMY_MANAGER = rl("tetralibs", "bck_economy_manager");
+    public static final ResourceLocation BCK_WARPS = rl("tetralibs", "bck_warps");
+
+    public static final ResourceLocation BCK_COMBAT = rl("tetralibs", "bck_combat");
+
+    public static final ResourceLocation BCK_VANISH = rl("tetralibs", "bck_vanish");
 
     private ModuleIds() {
     }

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -56,7 +57,7 @@ public class TetraLibsEconomyhandler {
                 BCKEconomyManager.addBank((Player) ent, amount, true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.bank.add.success").getString()).replace("<player>", ent.getName().getString())).replace("<amount>", "" + amount))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.bank.add.success", Component.literal(BCKUtils.TextUtil.universal(ent.getName().getString(), ent)), Component.literal(String.valueOf(amount)))), false);
         }
 
         public static void remove(CommandContext<CommandSourceStack> arguments, Entity entity) {
@@ -83,7 +84,7 @@ public class TetraLibsEconomyhandler {
                 }.getEntity()), (DoubleArgumentType.getDouble(arguments, "amount")), true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.bank.remove.success").getString()).replace("<player>", (new Object() {
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.bank.remove.success", Component.literal(new Object() {
                     public Entity getEntity() {
                         try {
                             return EntityArgument.getEntity(arguments, "player");
@@ -92,7 +93,7 @@ public class TetraLibsEconomyhandler {
                             return null;
                         }
                     }
-                }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), false);
+                }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), false);
         }
 
         public static void set(CommandContext<CommandSourceStack> arguments, Entity entity) {
@@ -119,7 +120,7 @@ public class TetraLibsEconomyhandler {
                 }.getEntity()), (DoubleArgumentType.getDouble(arguments, "amount")), true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.bank.set.success").getString()).replace("<player>", (new Object() {
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.bank.set.success", Component.literal(new Object() {
                     public Entity getEntity() {
                         try {
                             return EntityArgument.getEntity(arguments, "player");
@@ -128,59 +129,24 @@ public class TetraLibsEconomyhandler {
                             return null;
                         }
                     }
-                }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), false);
+                }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), false);
         }
 
         public static void get(CommandContext<CommandSourceStack> arguments, Entity entity) {
             if (entity == null) return;
             Entity ee = null;
+            Entity ent = new Object() {
+                public Entity getEntity() {
+                    try {
+                        return EntityArgument.getEntity(arguments, "player");
+                    } catch (CommandSyntaxException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            }.getEntity();
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((((Component.translatable("command.tetralibs.economy.bank.get.text").getString()).replace("<amount>", "" + ((new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()) instanceof Player ? BCKEconomyManager.getBank((Player) (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity())) : 0))).replace("<player>", (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()).getName().getString())).replace("<formatted>", BCKUtils.NumberUtil.convertNumberToString(((new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()) instanceof Player ? BCKEconomyManager.getBank((Player) (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity())) : 0), 2)))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.bank.get.text", Component.literal(String.valueOf(BCKEconomyManager.getBank((Player) ent))), Component.literal(ent.getName().getString()), Component.literal(BCKUtils.NumberUtil.convertNumberToString(BCKEconomyManager.getBank((Player) ent))))), false);
         }
     }
 
@@ -209,7 +175,7 @@ public class TetraLibsEconomyhandler {
                 }.getEntity()), (DoubleArgumentType.getDouble(arguments, "amount")), true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.player.add.success").getString()).replace("<player>", (new Object() {
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.player.add.success", Component.literal(new Object() {
                     public Entity getEntity() {
                         try {
                             return EntityArgument.getEntity(arguments, "player");
@@ -218,8 +184,8 @@ public class TetraLibsEconomyhandler {
                             return null;
                         }
                     }
-                }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), false);
-            BCKLichWhisper.send(Component.nullToEmpty((((Component.translatable("command.tetralibs.economy.player.add.success").getString()).replace("<player>", (new Object() {
+                }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), false);
+            BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.player.add.success", Component.literal(new Object() {
                 public Entity getEntity() {
                     try {
                         return EntityArgument.getEntity(arguments, "player");
@@ -228,7 +194,7 @@ public class TetraLibsEconomyhandler {
                         return null;
                     }
                 }
-            }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), 6, true);
+            }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), 6, true);
         }
 
         public static void remove(CommandContext<CommandSourceStack> arguments, Entity entity) {
@@ -255,7 +221,7 @@ public class TetraLibsEconomyhandler {
                 }.getEntity()), (DoubleArgumentType.getDouble(arguments, "amount")), true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.player.remove.success").getString()).replace("<player>", (new Object() {
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.player.remove.success", Component.literal(new Object() {
                     public Entity getEntity() {
                         try {
                             return EntityArgument.getEntity(arguments, "player");
@@ -264,7 +230,7 @@ public class TetraLibsEconomyhandler {
                             return null;
                         }
                     }
-                }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), false);
+                }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), false);
         }
 
         public static void set(CommandContext<CommandSourceStack> arguments, Entity entity) {
@@ -291,7 +257,7 @@ public class TetraLibsEconomyhandler {
                 }.getEntity()), (DoubleArgumentType.getDouble(arguments, "amount")), true);
             }
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled((((Component.translatable("command.tetralibs.economy.player.set.success").getString()).replace("<player>", (new Object() {
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.player.set.success", Component.literal(new Object() {
                     public Entity getEntity() {
                         try {
                             return EntityArgument.getEntity(arguments, "player");
@@ -300,58 +266,23 @@ public class TetraLibsEconomyhandler {
                             return null;
                         }
                     }
-                }.getEntity()).getName().getString())).replace("<amount>", "" + DoubleArgumentType.getDouble(arguments, "amount")))), false);
+                }.getEntity().getName().getString()), Component.literal(String.valueOf(DoubleArgumentType.getDouble(arguments, "amount"))))), false);
         }
 
         public static void get(CommandContext<CommandSourceStack> arguments, Entity entity) {
             if (entity == null) return;
+            Entity ent = new Object() {
+                public Entity getEntity() {
+                    try {
+                        return EntityArgument.getEntity(arguments, "player");
+                    } catch (CommandSyntaxException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            }.getEntity();
             if (entity instanceof Player _player && !_player.level().isClientSide())
-                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((((Component.translatable("command.tetralibs.economy.player.get.text").getString()).replace("<amount>", "" + ((new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()) instanceof Player ? BCKEconomyManager.getMoney((Player) (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity())) : 0))).replace("<player>", (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()).getName().getString())).replace("<formatted>", BCKUtils.NumberUtil.convertNumberToString(((new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity()) instanceof Player ? BCKEconomyManager.getMoney((Player) (new Object() {
-                    public Entity getEntity() {
-                        try {
-                            return EntityArgument.getEntity(arguments, "player");
-                        } catch (CommandSyntaxException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                }.getEntity())) : 0), 2)))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.economy.player.get.text", Component.literal(String.valueOf(BCKEconomyManager.getMoney((Player) ent))), Component.literal(ent.getName().getString()), Component.literal(BCKUtils.NumberUtil.convertNumberToString(BCKEconomyManager.getMoney((Player) ent))))), false);
         }
     }
 }

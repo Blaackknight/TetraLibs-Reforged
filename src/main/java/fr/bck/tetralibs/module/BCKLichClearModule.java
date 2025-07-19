@@ -24,6 +24,7 @@ import java.util.Set;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -119,21 +120,21 @@ public final class BCKLichClearModule extends CoreDependentModule {
 
     private static void broadcastCountdown(ServerLevel world, int remainingSeconds) {
         if (remainingSeconds > 0) {  // Évite d’envoyer un message si le temps est incorrect
-            String countdownMessage = Component.translatable("tetra_libs.events.lich_clear.countdown").getString().replace("<time>", String.valueOf(remainingSeconds)).replace("<world>", getWorldName(world));
+            Component countdownMessage = Component.translatable("tetra_libs.events.lich_clear.countdown", Component.literal(String.valueOf(remainingSeconds)), Component.literal(getWorldName(world)));
 
             // Envoie le message uniquement aux joueurs dans ce monde
             for (Player player : world.players()) {
-                player.sendSystemMessage(Component.literal(countdownMessage));
+                player.sendSystemMessage(BCKUtils.TextUtil.toStyled(countdownMessage));
             }
         }
     }
 
     private static void broadcastMidWarning(ServerLevel world, int quarterTime) {
-        String midWarningMessage = Component.translatable("tetra_libs.events.lich_clear.mid_warning").getString().replace("<time>", String.valueOf(quarterTime)).replace("<world>", getWorldName(world));
+        Component midWarningMessage = Component.translatable("tetra_libs.events.lich_clear.mid_warning", Component.literal(String.valueOf(quarterTime)), Component.literal(getWorldName(world)));
 
         // Envoie le message uniquement aux joueurs dans ce monde
         for (Player player : world.players()) {
-            player.sendSystemMessage(Component.literal(midWarningMessage));
+            player.sendSystemMessage(BCKUtils.TextUtil.toStyled(midWarningMessage));
         }
     }
 
@@ -169,14 +170,14 @@ public final class BCKLichClearModule extends CoreDependentModule {
     private static void broadcastSuccessMessage(ServerLevel world, Map<String, Integer> clearedItemsByWorld, int cooldown) {
         StringBuilder hoverTextBuilder = new StringBuilder();
         clearedItemsByWorld.forEach((worldName, itemCount) -> {
-            hoverTextBuilder.append(Component.translatable("tetra_libs.events.lich_clear.world_detail").getString().replace("<world>", worldName).replace("<count>", String.valueOf(itemCount))).append("\n");
+            hoverTextBuilder.append(Component.translatable("tetra_libs.events.lich_clear.world_detail", Component.literal(worldName), Component.literal(String.valueOf(itemCount)))).append("\n");
         });
 
-        Component countComponent = Component.literal("§d" + count[0]).withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(hoverTextBuilder.toString().trim()))));
+        Component countComponent = Component.literal("§d" + count[0]).withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(String.valueOf(hoverTextBuilder)))));
 
-        String rawMessage = Component.translatable("tetra_libs.events.lich_clear.success").getString().replace("<time>", String.valueOf(cooldown)).replace("<world>", getWorldName(world));
+        Component rawMessage = Component.translatable("tetra_libs.events.lich_clear.success", Component.literal(String.valueOf(cooldown)), Component.literal(getWorldName(world)));
 
-        String[] messageParts = rawMessage.split("<count>", 2);
+        String[] messageParts = String.valueOf(rawMessage).split("<count>", 2);
         Component successMessage = Component.empty().append(Component.literal(messageParts[0])).append(countComponent).append(Component.literal(messageParts.length > 1 ? messageParts[1] : ""));
 
         // Envoie le message uniquement aux joueurs dans ce monde

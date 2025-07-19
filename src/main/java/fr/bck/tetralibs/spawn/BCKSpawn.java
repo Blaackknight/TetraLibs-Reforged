@@ -3,6 +3,7 @@ package fr.bck.tetralibs.spawn;
 
 import fr.bck.tetralibs.core.BCKCore;
 import fr.bck.tetralibs.core.BCKLog;
+import fr.bck.tetralibs.core.BCKUtils;
 import fr.bck.tetralibs.core.DataWrapper;
 import fr.bck.tetralibs.data.BCKServerdata;
 import fr.bck.tetralibs.lich.BCKLichWhisper;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;
+
 
 
 
@@ -110,7 +112,7 @@ public class BCKSpawn {
         }
         if (entity instanceof ServerPlayer _player) {
             if (((DataWrapper) BCKServerdata.data("spawn.teleport_cooldown")).getDouble() > 0)
-                _player.displayClientMessage(Component.literal(((Component.translatable("command.spawn.teleport_in").getString()).replace("<count>", "" + ((DataWrapper) BCKServerdata.data("spawn.teleport_cooldown")).getDouble()))), false);
+                _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.spawn.teleport_in", Component.literal(String.valueOf(((DataWrapper) BCKServerdata.data("spawn.teleport_cooldown")).getDouble())))), false);
 
             // Sauvegarde de la position actuelle pour vérifier si le joueur bouge
             Vec3 initialPosition = _player.position();
@@ -131,16 +133,16 @@ public class BCKSpawn {
                         boolean success = teleportPlayer(_player, dimension, x, y, z, (float) pitch, (float) yaw);
                         if (success) {
                             BCKLog.info(BCKCore.TITLES_COLORS.title(BCKSpawn.class), _player.getName().getString() + " has been teleported to spawn");
-                            BCKLichWhisper.send(Component.literal(((Component.translatable("lich_whisper.spawn").getString())).replace("<player>", _player.getName().getString())), 3, false);
-                            _player.displayClientMessage(Component.literal(((Component.translatable("command.spawn.teleport").getString()).replace("<player>", _player.getName().getString()))), false);
+                            BCKLichWhisper.send(BCKUtils.TextUtil.toStyled(Component.translatable("lich_whisper.spawn", Component.literal(_player.getName().getString()))), 3, false);
+                            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.spawn.teleport", Component.literal(_player.getName().getString()))), false);
                         } else {
                             BCKLog.error(BCKCore.TITLES_COLORS.title(BCKSpawn.class), "Failed to teleport " + entity.getName().getString() + " to spawn.");
-                            _player.displayClientMessage(Component.literal(((Component.translatable("command.spawn.teleport_error").getString()).replace("<player>", _player.getName().getString()))), false);
+                            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.spawn.teleport_error", Component.literal(_player.getName().getString()))), false);
                         }
                     } else {
                         // Annule la téléportation si le joueur a bougé
                         BCKLog.info(BCKCore.TITLES_COLORS.title(BCKSpawn.class), _player.getName().getString() + " moved. Teleportation canceled.");
-                        _player.displayClientMessage(Component.literal(Component.translatable("command.spawn.teleport_canceled").getString()), false);
+                        _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.spawn.teleport_canceled")), false);
                     }
                 }, delayInMs, java.util.concurrent.TimeUnit.MILLISECONDS); // Délai de 5 secondes
             }

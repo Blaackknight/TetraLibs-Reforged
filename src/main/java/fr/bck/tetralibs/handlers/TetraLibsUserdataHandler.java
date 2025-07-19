@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 
 
 
+
 /*≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
  ≡           Copyright BCK, Inc 2025. (DragClover / Blackknight)                 ≡
  ≡                                                                               ≡
@@ -66,7 +67,7 @@ public class TetraLibsUserdataHandler {
             }
         }.getEntity()));
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((((Component.translatable("command.tetralibs.userdata.set").getString()).replace("<key>", StringArgumentType.getString(arguments, "key"))).replace("<value>", StringArgumentType.getString(arguments, "value"))).replace("<player>", (new Object() {
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.userdata.set", Component.literal(StringArgumentType.getString(arguments, "key")), Component.literal(StringArgumentType.getString(arguments, "value")), Component.literal(new Object() {
                 public Entity getEntity() {
                     try {
                         return EntityArgument.getEntity(arguments, "player");
@@ -75,13 +76,13 @@ public class TetraLibsUserdataHandler {
                         return null;
                     }
                 }
-            }.getEntity()).getName().getString()))), false);
+            }.getEntity().getName().getString()))), false);
     }
 
     public static void get(CommandContext<CommandSourceStack> arguments, Entity entity) {
         if (entity == null) return;
         if (entity instanceof Player _player && !_player.level().isClientSide())
-            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(((((Component.translatable("command.tetralibs.userdata.get").getString()).replace("<key>", StringArgumentType.getString(arguments, "key"))).replace("<value>", "" + ((DataWrapper) BCKUserdata.data((StringArgumentType.getString(arguments, "key")), (new Object() {
+            _player.displayClientMessage(BCKUtils.TextUtil.toStyled(Component.translatable("command.tetralibs.userdata.get", Component.literal(StringArgumentType.getString(arguments, "key")), Component.literal(((DataWrapper) BCKUserdata.data((StringArgumentType.getString(arguments, "key")), (new Object() {
                 public Entity getEntity() {
                     try {
                         return EntityArgument.getEntity(arguments, "player");
@@ -99,7 +100,7 @@ public class TetraLibsUserdataHandler {
                         return null;
                     }
                 }
-            }.getEntity()))).toString())).replace("<player>", (new Object() {
+            }.getEntity()))).toString()), Component.literal(new Object() {
                 public Entity getEntity() {
                     try {
                         return EntityArgument.getEntity(arguments, "player");
@@ -108,6 +109,6 @@ public class TetraLibsUserdataHandler {
                         return null;
                     }
                 }
-            }.getEntity()).getName().getString()))), false);
+            }.getEntity().getName().getString()))), false);
     }
 }
